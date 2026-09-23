@@ -1,0 +1,6 @@
+# Revalidate the small JS on every load (cheap 304s) so deploys show up
+# immediately instead of serving a stale cached copy.
+/gl.js
+  Cache-Control: no-cache
+/type.js
+  Cache-Control: no-cache

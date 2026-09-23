@@ -58,11 +58,11 @@
       vec2 q = vec2(fbm(p*0.85 + t), fbm(p*0.85 - t + 4.0));
       float f = fbm(p*0.85 + 1.1*q + 0.2*m);
 
-      float ink = smoothstep(0.25, 0.85, f);   // soft, high-contrast wash
+      float ink = smoothstep(0.30, 0.95, f);   // gentler wash — lets type lead
 
-      // bone paper -> near-black ink
+      // bone paper -> soft grey (not black); the type is the ink now
       vec3 paper = vec3(0.965, 0.957, 0.937);
-      vec3 dark  = vec3(0.055, 0.055, 0.070);
+      vec3 dark  = vec3(0.74, 0.73, 0.71);
       vec3 col = mix(paper, dark, ink);
 
       // faint grain so the big gradients don't band on cheap panels

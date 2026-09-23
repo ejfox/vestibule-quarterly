@@ -147,17 +147,22 @@
     .seal .ring-spin { animation: none; }
   }
 
+  /* the strap is now a display line — the type is the hero */
   .strap {
     font-family: var(--font-display);
     font-style: italic;
-    font-weight: 340;
-    font-size: clamp(1.05rem, 2.6vw, 1.6rem);
+    font-weight: 300;
+    font-size: clamp(1.6rem, 5.2vw, 3.4rem);
+    line-height: 1.05;
+    letter-spacing: -0.015em;
     color: var(--ink);
-    max-width: 30ch;
+    max-width: 16ch;
+    text-wrap: balance;
     opacity: 0; transform: translateY(0.6em);
     transition: opacity 1s ease, transform 1s ease;
     transition-delay: .9s;
   }
+  .strap em { font-style: normal; } /* roman inside the italic for contrast */
   .type-in .strap { opacity: 1; transform: none; }
 
   /* ---------- footer row: lede + issue + signup ---------- */
@@ -175,8 +180,14 @@
   .type-in .plate { opacity: 1; transform: none; }
   @media (max-width: 720px) { .plate { grid-template-columns: 1fr; } }
 
-  .lede { font-size: clamp(0.95rem, 1.4vw, 1.05rem); max-width: 46ch; color: var(--ink); }
+  .lede { font-size: clamp(1rem, 1.5vw, 1.15rem); line-height: 1.6; max-width: 44ch; color: var(--ink); }
   .lede em { font-family: var(--font-display); font-style: italic; }
+  /* oversized drop cap sets the type as the centerpiece */
+  .lede::first-letter {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: 3.6em; line-height: 0.7; float: left;
+    padding: 0.06em 0.1em 0 0;
+  }
 
   .aside { display: flex; flex-direction: column; gap: 1.25rem; }
 
@@ -185,8 +196,8 @@
     font-size: 0.9rem;
     border-bottom: 1px solid var(--faint); padding-bottom: 0.75rem;
   }
-  .issue .no { font-family: var(--font-display); font-weight: 600; font-size: 1.15rem; }
-  .issue .ttl { font-style: italic; font-family: var(--font-display); }
+  .issue .no { font-family: var(--font-display); font-weight: 600; font-size: 1.7rem; }
+  .issue .ttl { font-style: italic; font-family: var(--font-display); font-size: 1.25rem; }
   .issue .st {
     text-transform: uppercase; letter-spacing: 0.18em;
     font-size: 0.6rem; color: var(--muted); white-space: nowrap;
@@ -258,7 +269,7 @@
         <text class="core-tag" x="500" y="650" text-anchor="middle">Forthcoming · MMXXVI</text>
       </svg>
     </h1>
-    <p class="strap">A threshold, not a destination.</p>
+    <p class="strap">A threshold, <em>not</em> a destination.</p>
   </header>
 
   <div class="plate">
