@@ -6,7 +6,8 @@
 <title>Vestibule Quarterly</title>
 <meta name="description" content="Vestibule Quarterly — a small magazine about the spaces between. Published four times a year. Issue One forthcoming." />
 <link rel="canonical" href="https://vestibulequarterly.com/" />
-<meta name="theme-color" content="#0b0b0e" />
+<meta name="theme-color" content="#f6f4ef" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#0d0d10" media="(prefers-color-scheme: dark)" />
 
 <!-- Open Graph -->
 <meta property="og:type" content="website" />
@@ -44,8 +45,18 @@
     --ink:   #0b0b0e;
     --muted: rgba(11, 11, 14, 0.55);
     --faint: rgba(11, 11, 14, 0.38);
+    --surface: rgba(246, 244, 239, 0.6);
     --font-display: "Fraunces", Georgia, serif;
     --font-ui: "Space Grotesk", system-ui, -apple-system, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #0d0d10;
+      --ink:   #f2efe8;
+      --muted: rgba(242, 239, 232, 0.55);
+      --faint: rgba(242, 239, 232, 0.36);
+      --surface: rgba(255, 255, 255, 0.06);
+    }
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -206,7 +217,7 @@
   form.signup {
     display: flex; align-items: stretch;
     border: 1px solid var(--ink);
-    background: rgba(246, 244, 239, 0.6);
+    background: var(--surface);
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
   }

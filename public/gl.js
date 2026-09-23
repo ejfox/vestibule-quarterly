@@ -31,6 +31,8 @@
     uniform vec2  u_res;
     uniform float u_time;
     uniform vec2  u_mouse;
+    uniform vec3  u_paper;   // background tone (light or dark scheme)
+    uniform vec3  u_ink;     // wash tone the forms drift toward
 
     float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123); }
     float noise(vec2 p){
@@ -60,10 +62,8 @@
 
       float ink = smoothstep(0.30, 0.95, f);   // gentler wash — lets type lead
 
-      // bone paper -> soft grey (not black); the type is the ink now
-      vec3 paper = vec3(0.965, 0.957, 0.937);
-      vec3 dark  = vec3(0.74, 0.73, 0.71);
-      vec3 col = mix(paper, dark, ink);
+      // palette comes from the page (light or dark scheme)
+      vec3 col = mix(u_paper, u_ink, ink);
 
       // faint grain so the big gradients don't band on cheap panels
       float g = (hash(gl_FragCoord.xy + t) - 0.5) * 0.015;
@@ -105,6 +105,25 @@
   const uRes   = gl.getUniformLocation(prog, 'u_res');
   const uTime  = gl.getUniformLocation(prog, 'u_time');
   const uMouse = gl.getUniformLocation(prog, 'u_mouse');
+  const uPaper = gl.getUniformLocation(prog, 'u_paper');
+  const uInk   = gl.getUniformLocation(prog, 'u_ink');
+
+  // palette per colour scheme — kept in sync with the CSS variables
+  const PALETTE = {
+    light: { paper: [0.965, 0.957, 0.937], ink: [0.74, 0.73, 0.71] },
+    dark:  { paper: [0.051, 0.051, 0.063], ink: [0.20, 0.20, 0.24] },
+  };
+  const darkMQ = matchMedia('(prefers-color-scheme: dark)');
+  function applyPalette() {
+    const p = darkMQ.matches ? PALETTE.dark : PALETTE.light;
+    gl.uniform3fv(uPaper, p.paper);
+    gl.uniform3fv(uInk, p.ink);
+  }
+  applyPalette();
+  darkMQ.addEventListener('change', () => {
+    applyPalette();
+    if (reduce) gl.drawArrays(gl.TRIANGLES, 0, 3); // static mode: repaint now
+  });
 
   const mouse = { x: 0, y: 0, tx: 0, ty: 0 };
   addEventListener('pointermove', (e) => {
