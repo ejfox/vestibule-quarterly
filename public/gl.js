@@ -49,7 +49,7 @@
       vec2 uv = gl_FragCoord.xy / u_res.xy;
       vec2 p = uv;
       p.x *= u_res.x / u_res.y;          // aspect-correct
-      float t = u_time * 0.045;
+      float t = u_time * 0.012;          // slow drift — the ink barely moves
 
       vec2 m = (u_mouse / u_res) - 0.5;
 

@@ -1,64 +1,65 @@
 /*
  * type.js — living typography for the masthead.
  *
- * Fraunces is a variable font with four axes we can drive: optical size (opsz),
- * weight (wght), softness (SOFT), and wonkiness (WONK). We animate them per
- * word on slow, offset sine waves so the title is never quite the same twice —
- * it breathes, softens, and buckles. Letters are split so each can carry its
- * own delay for the intro reveal.
+ * The title is set in a justified, edge-to-edge arrangement (see CSS): letters
+ * fill the line exactly, so nothing ever overflows. To keep it alive without
+ * ever reflowing (which is what caused the old shifting/clipping), we:
  *
- * Respects prefers-reduced-motion: split + reveal still happen, the perpetual
- * axis animation does not.
+ *   1. hold the Fraunces axes FIXED (opsz/wght/SOFT/WONK never animate → advance
+ *      widths are constant → the justified spacing never recomputes), and
+ *   2. animate only `transform: translateY` per letter — a slow vertical wave.
+ *      Transforms are post-layout, so they move pixels without touching the box.
+ *
+ * The intro reveal is opacity + de-blur only (owned by CSS); transform is owned
+ * here, so the two never fight. Respects prefers-reduced-motion.
  */
 (() => {
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const words = [...document.querySelectorAll('.masthead .word')];
   if (!words.length) return;
 
-  // Split each word into per-letter spans for the staggered reveal.
+  // Fixed axis values per word. The outline word gets a permanent WONK for
+  // character; both are metrics-stable once set.
+  const AXES = (wonk) => `"opsz" 128, "wght" 560, "SOFT" 24, "WONK" ${wonk}`;
+
+  // Split each word into per-letter spans; assign a global index for the
+  // staggered reveal and a phase for the wave.
+  const letters = [];
   let idx = 0;
-  for (const word of words) {
+  words.forEach((word, w) => {
     const text = word.textContent;
     word.textContent = '';
-    for (const ch of text) {
+    word.style.fontVariationSettings = AXES(w % 2 === 1 ? 1 : 0);
+    [...text].forEach((ch) => {
       const span = document.createElement('span');
       span.className = 'ltr';
       span.textContent = ch;
-      span.style.setProperty('--i', idx++);
+      span.style.setProperty('--i', idx);
+      letters.push({ el: span, i: idx });
+      idx++;
       word.appendChild(span);
-    }
-  }
+    });
+  });
 
-  // Trigger the CSS reveal once fonts are ready (avoids a flash of fallback).
+  // Trigger the CSS reveal once fonts are ready (no flash of fallback metrics).
   const go = () => document.documentElement.classList.add('type-in');
   if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(go);
-    setTimeout(go, 1200); // safety net if fonts hang
+    setTimeout(go, 1200); // safety net
   } else {
     go();
   }
 
   if (reduce) return;
 
-  // Perpetual axis drift, one phase offset per word.
-  // Only SOFT (terminal rounding) is animated — it changes glyph shape without
-  // changing advance width, so the line never reflows and nothing shifts.
-  // opsz + wght are FIXED per word; a static WONK is baked into a couple of
-  // words for avant-garde character (also metrics-stable once set).
-  const OPSZ = 110, WGHT = 560;
-  const cfg = words.map((el, i) => ({
-    el,
-    phase: i * 2.3,
-    wonk: i % 2 === 1 ? 1 : 0, // second word gets a permanent wonk
-  }));
+  // Slow vertical wave travelling through the letters. Amplitude is tiny and in
+  // em, so it scales with the type and stays well inside the padded line box.
   const t0 = performance.now();
-
   function tick(now) {
     const t = (now - t0) / 1000;
-    for (const { el, phase, wonk } of cfg) {
-      const soft = 50 * (0.5 + 0.5 * Math.sin(t * 0.28 + phase)); // 0..50, breathing
-      el.style.fontVariationSettings =
-        `"opsz" ${OPSZ}, "wght" ${WGHT}, "SOFT" ${soft.toFixed(1)}, "WONK" ${wonk}`;
+    for (const { el, i } of letters) {
+      const y = Math.sin(t * 0.6 + i * 0.5) * 0.045; // ±0.045em
+      el.style.transform = `translateY(${y.toFixed(4)}em)`;
     }
     requestAnimationFrame(tick);
   }

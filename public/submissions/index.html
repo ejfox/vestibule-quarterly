@@ -185,6 +185,16 @@
       resist the caption.</li>
   </ul>
 
+  <h2>Issue One — <em>Normal Mode</em></h2>
+  <p>
+    We're reading now for our first issue, <strong>Normal Mode</strong>: on
+    conditioning, keybindings, and the escape key. The default state you return
+    to and the reflexes that keep you there — the schedule of reinforcement, the
+    muscle memory, the chord you hit without looking — and the moment the mode
+    drops out from under you and stops responding. Send us work about control and
+    its failure: the breakdown, the loop, the command that finally doesn't take.
+  </p>
+
   <h2>What we're after</h2>
   <p>
     Precision over volume. A clear eye. Curiosity that has done its reading. We
@@ -202,41 +212,24 @@
   </dl>
 
   <h2>Send us your work</h2>
-  <p>Fill this out and we'll be in touch. It goes straight to our submissions inbox.</p>
+  <p>Fill this out and we'll be in touch. It posts straight to our submissions
+    inbox — no third-party form, no account required.</p>
 
-  <!--
-    ┌─────────────────────────────────────────────────────────────────────────┐
-    │  WIRE THIS TO A GOOGLE FORM (two placeholders to replace):               │
-    │                                                                         │
-    │  1. Create the Google Form with fields matching the ones below.          │
-    │  2. Get the POST target: open the live form → View source / Network →    │
-    │     the action ends in `/formResponse`. Put that whole URL in `action`.  │
-    │     It looks like:                                                        │
-    │       https://docs.google.com/forms/d/e/FORM_ID/formResponse             │
-    │  3. Each field posts as `entry.NNNNNNNNNN`. Find each field's entry id    │
-    │     (prefill the form → "Get pre-filled link", or inspect the form) and   │
-    │     replace the `name="entry.XXXX"` placeholders below to match.          │
-    │                                                                         │
-    │  Posting to the hidden iframe means no redirect to Google's ugly page —   │
-    │  we show our own thank-you instead. Also update the .fallback link.       │
-    └─────────────────────────────────────────────────────────────────────────┘
-  -->
-  <form class="form-card"
-        action="https://docs.google.com/forms/d/e/FORM_ID/formResponse"
-        method="POST" target="vq-sink" id="subform">
+  <!-- Posts JSON to our own Pages Function (functions/api/submit.js → D1). -->
+  <form class="form-card" action="/api/submit" method="POST" id="subform">
     <div class="row">
       <div class="field">
         <label for="name">Name</label>
-        <input id="name" name="entry.1000001" type="text" required autocomplete="name" />
+        <input id="name" name="name" type="text" required autocomplete="name" />
       </div>
       <div class="field">
         <label for="email">Email</label>
-        <input id="email" name="entry.1000002" type="email" required autocomplete="email" />
+        <input id="email" name="email" type="email" required autocomplete="email" />
       </div>
     </div>
     <div class="field">
       <label for="kind">What are you sending?</label>
-      <select id="kind" name="entry.1000003" required>
+      <select id="kind" name="kind" required>
         <option value="" disabled selected>Choose one…</option>
         <option>Essay / criticism</option>
         <option>Fiction / prose poem</option>
@@ -248,20 +241,19 @@
     </div>
     <div class="field">
       <label for="title">Working title</label>
-      <input id="title" name="entry.1000004" type="text" />
+      <input id="title" name="title" type="text" />
     </div>
     <div class="field">
       <label for="link">Link to the work (Google Doc, PDF, portfolio)</label>
-      <input id="link" name="entry.1000005" type="url" placeholder="https://" />
+      <input id="link" name="link" type="url" placeholder="https://" />
     </div>
     <div class="field">
       <label for="pitch">The work, or a note about it</label>
-      <textarea id="pitch" name="entry.1000006" placeholder="Paste it, or tell us what it is and why it belongs in the doorway."></textarea>
+      <textarea id="pitch" name="pitch" placeholder="Paste it, or tell us what it is and why it belongs in the doorway."></textarea>
     </div>
     <button class="submit" type="submit">Send submission</button>
-    <p class="fallback">
-      Form not loading? Email <a href="mailto:submissions@vestibulequarterly.com">submissions@vestibulequarterly.com</a>,
-      or <a href="https://docs.google.com/forms/d/e/FORM_ID/viewform" target="_blank" rel="noopener">open the form directly</a>.
+    <p class="fallback" data-note>
+      Prefer email? <a href="mailto:submissions@vestibulequarterly.com">submissions@vestibulequarterly.com</a>.
     </p>
   </form>
 
@@ -269,9 +261,6 @@
     Received. Thank you — we read everything, and we'll write back. Keep an eye on
     the doorway.
   </div>
-
-  <!-- hidden target so the Google Form POST doesn't navigate away -->
-  <iframe name="vq-sink" style="display:none" title="submission sink"></iframe>
 
   <footer>
     <span>© 2026 Vestibule Quarterly</span>
@@ -281,19 +270,37 @@
 </div>
 
 <script>
-  // Show our own thank-you once the hidden iframe receives Google's response.
-  // (First load event is the initial blank iframe; ignore it.)
+  // Submit via our own Pages Function → D1. No reload, no third party.
   (function () {
     var form = document.getElementById('subform');
-    var sink = document.getElementsByName('vq-sink')[0];
     var thanks = document.getElementById('thanks');
-    var submitted = false;
-    if (form) form.addEventListener('submit', function () { submitted = true; });
-    if (sink) sink.addEventListener('load', function () {
-      if (!submitted) return;
-      form.style.display = 'none';
-      thanks.classList.add('show');
-      thanks.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    var note = form && form.querySelector('[data-note]');
+    var button = form && form.querySelector('button.submit');
+    if (!form) return;
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      var payload = {};
+      new FormData(form).forEach(function (v, k) { payload[k] = v; });
+      if (button) { button.disabled = true; button.textContent = 'Sending…'; }
+      try {
+        var res = await fetch(form.action, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        var data = await res.json();
+        if (res.ok && data.ok) {
+          form.style.display = 'none';
+          thanks.classList.add('show');
+          thanks.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+          if (note) note.textContent = data.error || 'Something went wrong — try again.';
+          if (button) { button.disabled = false; button.textContent = 'Send submission'; }
+        }
+      } catch (_) {
+        if (note) note.textContent = 'Network hiccup — try again in a moment.';
+        if (button) { button.disabled = false; button.textContent = 'Send submission'; }
+      }
     });
   })();
 </script>

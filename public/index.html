@@ -113,41 +113,42 @@
   .title {
     font-family: var(--font-display);
     font-weight: 600;
-    line-height: 0.92;              /* room so Q/y descenders don't clip */
-    letter-spacing: -0.02em;
-    /* sized to keep the longest word (QUARTERLY, 9 chars) inside the viewport */
-    font-size: clamp(2.4rem, 13.2vw, 13rem);
+    line-height: 0.9;
     text-transform: uppercase;
-    padding-bottom: 0.08em;         /* catch the descender of the outline Q */
+    width: 100%;
+    padding-bottom: 0.16em;         /* descender room (the Q tail) */
   }
-  .title .word { display: block; white-space: nowrap; }
+  /* Each word is justified edge-to-edge: the letters spread to fill the line,
+     so the title fills the width exactly and can NEVER overflow / clip,
+     whatever the screen size. This is the arrangement, not an afterthought. */
+  .title .word {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    font-size: clamp(1.5rem, 9.5vw, 8.5rem);
+    letter-spacing: 0;              /* the justify handles the tracking */
+  }
 
   /* Second word rendered as an outline — the avant-garde stroke pass. */
   .title .word.outline .ltr {
     color: transparent;
-    -webkit-text-stroke: clamp(1px, 0.35vw, 3px) var(--ink);
+    -webkit-text-stroke: clamp(1px, 0.3vw, 3px) var(--ink);
   }
 
-  /* per-letter reveal */
+  /* Reveal is opacity + de-blur only. type.js owns `transform` (a slow vertical
+     wave), so the two never fight and the layout never reflows. */
   .ltr {
     display: inline-block;
-    will-change: transform, filter, opacity;
     opacity: 0;
-    transform: translateY(0.35em) scaleY(1.35);
-    filter: blur(14px);
+    filter: blur(12px);
+    will-change: opacity, filter, transform;
   }
   .type-in .ltr {
     opacity: 1;
-    transform: none;
     filter: blur(0);
-    transition:
-      opacity   .7s cubic-bezier(.2,.8,.2,1),
-      transform .9s cubic-bezier(.2,.8,.2,1),
-      filter    .9s ease;
-    transition-delay: calc(0.045s * var(--i) + 0.15s);
+    transition: opacity .7s ease, filter .8s ease;
+    transition-delay: calc(0.05s * var(--i) + 0.15s);
   }
-  /* keep the space between words from collapsing */
-  .ltr:empty { width: 0.25em; }
 
   .strap {
     font-family: var(--font-display);
@@ -215,8 +216,12 @@
     cursor: pointer; transition: background .2s, color .2s;
   }
   form.signup button:hover { background: var(--paper); color: var(--ink); }
+  .issue-dek { font-family: var(--font-display); font-style: italic; font-size: 0.92rem; color: var(--muted); margin-top: -0.35rem; }
   .note { font-size: 0.68rem; color: var(--muted); letter-spacing: 0.04em; }
   .note a { color: var(--ink); }
+  .signup.done { border-style: dashed; align-items: center; justify-content: center; padding: 0.75rem; }
+  .signup.done::after { content: "✓ You're on the list."; font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink); }
+  .signup.done input, .signup.done button { display: none; }
 </style>
 </head>
 <body>
@@ -249,24 +254,50 @@
     </p>
     <div class="aside">
       <div class="issue">
-        <span><span class="no">№ 01</span> &nbsp;<span class="ttl">The Threshold</span></span>
+        <span><span class="no">№ 01</span> &nbsp;<span class="ttl">Normal Mode</span></span>
         <span class="st">Forthcoming</span>
       </div>
-      <!--
-        Posts to Formspree by default (no backend). Replace the action URL with
-        your own form endpoint, or drop in a Pages Function + D1 to self-host —
-        same recipe as spliffs.org's functions/api/count.js.
-      -->
-      <form class="signup" action="https://formspree.io/f/your-form-id" method="POST">
+      <p class="issue-dek">On conditioning, keybindings, and the escape key — the
+        modal self, and the moment it stops responding.</p>
+
+      <!-- Posts JSON to our own Pages Function (functions/api/subscribe.js → D1). -->
+      <form class="signup" action="/api/subscribe" method="POST" data-ajax>
         <input type="email" name="email" placeholder="you@example.com" required aria-label="Email address" />
         <button type="submit">Notify</button>
       </form>
-      <p class="note">No noise. One signal when the door opens · <a href="mailto:hello@vestibulequarterly.com">hello@vestibulequarterly.com</a></p>
+      <p class="note" data-note>No noise. One signal when the door opens · <a href="mailto:hello@vestibulequarterly.com">hello@vestibulequarterly.com</a></p>
     </div>
   </div>
 </main>
 
 <script src="/gl.js" defer></script>
 <script src="/type.js" defer></script>
+<script>
+  // Notify signup → POST to our Pages Function, no page reload.
+  (function () {
+    var form = document.querySelector('form.signup[data-ajax]');
+    if (!form) return;
+    var note = document.querySelector('[data-note]');
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      var email = form.querySelector('input[name=email]').value.trim();
+      try {
+        var res = await fetch(form.action, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ email: email }),
+        });
+        var data = await res.json();
+        if (res.ok && data.ok) {
+          form.classList.add('done');
+        } else if (note) {
+          note.textContent = data.error || 'Something went wrong — try again.';
+        }
+      } catch (_) {
+        if (note) note.textContent = 'Network hiccup — try again.';
+      }
+    });
+  })();
+</script>
 </body>
 </html>
