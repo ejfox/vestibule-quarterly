@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Vestibule Quarterly</title>
+<meta name="description" content="Vestibule Quarterly — a small magazine about the spaces between. Published four times a year. Issue One forthcoming." />
+<link rel="canonical" href="https://vestibulequarterly.com/" />
+<meta name="theme-color" content="#0b0b0e" />
+
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Vestibule Quarterly" />
+<meta property="og:url" content="https://vestibulequarterly.com/" />
+<meta property="og:title" content="Vestibule Quarterly" />
+<meta property="og:description" content="A small magazine about the spaces between. Issue One forthcoming." />
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Vestibule Quarterly" />
+<meta name="twitter:description" content="A small magazine about the spaces between. Issue One forthcoming." />
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+<link rel="preload" href="/fonts/Fraunces-var.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="preload" href="/fonts/SpaceGrotesk-var.woff2" as="font" type="font/woff2" crossorigin />
+
+<style>
+  /* ---------- fonts ---------- */
+  @font-face {
+    font-family: "Fraunces";
+    src: url("/fonts/Fraunces-var.woff2") format("woff2");
+    font-weight: 100 900;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "Space Grotesk";
+    src: url("/fonts/SpaceGrotesk-var.woff2") format("woff2");
+    font-weight: 300 700;
+    font-display: swap;
+  }
+
+  :root {
+    --paper: #f6f4ef;
+    --ink:   #0b0b0e;
+    --muted: rgba(11, 11, 14, 0.55);
+    --faint: rgba(11, 11, 14, 0.38);
+    --font-display: "Fraunces", Georgia, serif;
+    --font-ui: "Space Grotesk", system-ui, -apple-system, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    min-height: 100dvh;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-ui);
+    font-weight: 400;
+    line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---------- shader canvas ---------- */
+  #gl {
+    position: fixed; inset: 0; width: 100%; height: 100%;
+    z-index: 0; display: block; pointer-events: none;
+  }
+
+  main {
+    position: relative; z-index: 1;
+    min-height: 100dvh;
+    display: flex; flex-direction: column;
+    padding: clamp(1.25rem, 4vw, 2.5rem);
+    gap: clamp(2rem, 6vh, 4rem);
+    mix-blend-mode: normal;
+  }
+
+  /* ---------- top bar ---------- */
+  .bar {
+    display: flex; justify-content: space-between; align-items: baseline;
+    text-transform: uppercase; letter-spacing: 0.28em;
+    font-size: 0.62rem; color: var(--muted);
+  }
+  .bar .dot::before {
+    content: ""; display: inline-block;
+    width: 0.5em; height: 0.5em; margin-right: 0.6em;
+    border-radius: 50%; background: var(--ink);
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:.25} 50%{opacity:1} }
+
+  /* ---------- masthead ---------- */
+  .masthead {
+    flex: 1;
+    display: flex; flex-direction: column; justify-content: center;
+    align-items: flex-start;
+    gap: clamp(0.75rem, 2vh, 1.5rem);
+  }
+  .kicker {
+    font-family: var(--font-ui);
+    text-transform: uppercase; letter-spacing: 0.4em;
+    font-size: clamp(0.6rem, 1.6vw, 0.75rem);
+    color: var(--muted);
+    opacity: 0; transform: translateY(0.6em);
+    transition: opacity .8s ease, transform .8s ease;
+    transition-delay: .1s;
+  }
+  .type-in .kicker { opacity: 1; transform: none; }
+
+  .title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    line-height: 0.86;
+    letter-spacing: -0.02em;
+    font-size: clamp(3.2rem, 17vw, 15rem);
+    text-transform: uppercase;
+  }
+  .title .word { display: block; }
+
+  /* Second word rendered as an outline — the avant-garde stroke pass. */
+  .title .word.outline .ltr {
+    color: transparent;
+    -webkit-text-stroke: clamp(1px, 0.35vw, 3px) var(--ink);
+  }
+
+  /* per-letter reveal */
+  .ltr {
+    display: inline-block;
+    will-change: transform, filter, opacity;
+    opacity: 0;
+    transform: translateY(0.35em) scaleY(1.35);
+    filter: blur(14px);
+  }
+  .type-in .ltr {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+    transition:
+      opacity   .7s cubic-bezier(.2,.8,.2,1),
+      transform .9s cubic-bezier(.2,.8,.2,1),
+      filter    .9s ease;
+    transition-delay: calc(0.045s * var(--i) + 0.15s);
+  }
+  /* keep the space between words from collapsing */
+  .ltr:empty { width: 0.25em; }
+
+  .strap {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 340;
+    font-size: clamp(1.05rem, 2.6vw, 1.6rem);
+    color: var(--ink);
+    max-width: 24ch;
+    opacity: 0; transform: translateY(0.6em);
+    transition: opacity 1s ease, transform 1s ease;
+    transition-delay: .9s;
+  }
+  .type-in .strap { opacity: 1; transform: none; }
+
+  /* ---------- footer row: lede + issue + signup ---------- */
+  .plate {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: clamp(1.5rem, 5vw, 4rem);
+    align-items: end;
+    padding-top: clamp(1.5rem, 4vh, 3rem);
+    border-top: 1px solid var(--ink);
+    opacity: 0; transform: translateY(1em);
+    transition: opacity 1s ease, transform 1s ease;
+    transition-delay: 1.2s;
+  }
+  .type-in .plate { opacity: 1; transform: none; }
+  @media (max-width: 720px) { .plate { grid-template-columns: 1fr; } }
+
+  .lede { font-size: clamp(0.95rem, 1.4vw, 1.05rem); max-width: 46ch; color: var(--ink); }
+  .lede em { font-family: var(--font-display); font-style: italic; }
+
+  .aside { display: flex; flex-direction: column; gap: 1.25rem; }
+
+  .issue {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 1rem;
+    font-size: 0.9rem;
+    border-bottom: 1px solid var(--faint); padding-bottom: 0.75rem;
+  }
+  .issue .no { font-family: var(--font-display); font-weight: 600; font-size: 1.15rem; }
+  .issue .ttl { font-style: italic; font-family: var(--font-display); }
+  .issue .st {
+    text-transform: uppercase; letter-spacing: 0.18em;
+    font-size: 0.6rem; color: var(--muted); white-space: nowrap;
+  }
+
+  form.signup {
+    display: flex; align-items: stretch;
+    border: 1px solid var(--ink);
+    background: rgba(246, 244, 239, 0.6);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+  form.signup input {
+    flex: 1; min-width: 0; border: 0; background: transparent;
+    padding: 0.75rem 0.9rem; font: inherit; color: var(--ink);
+  }
+  form.signup input::placeholder { color: var(--faint); }
+  form.signup input:focus { outline: none; }
+  form.signup button {
+    border: 0; border-left: 1px solid var(--ink);
+    background: var(--ink); color: var(--paper);
+    padding: 0.75rem 1.1rem; font: inherit; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.12em; font-size: 0.72rem;
+    cursor: pointer; transition: background .2s, color .2s;
+  }
+  form.signup button:hover { background: var(--paper); color: var(--ink); }
+  .note { font-size: 0.68rem; color: var(--muted); letter-spacing: 0.04em; }
+  .note a { color: var(--ink); }
+</style>
+</head>
+<body>
+
+<canvas id="gl" aria-hidden="true"></canvas>
+
+<main>
+  <div class="bar">
+    <span class="dot">Vestibule Quarterly</span>
+    <span>Est. MMXXVI</span>
+  </div>
+
+  <header class="masthead">
+    <p class="kicker">A magazine of the spaces between · Four times a year</p>
+    <h1 class="title">
+      <span class="word">Vestibule</span>
+      <span class="word outline">Quarterly</span>
+    </h1>
+    <p class="strap">A threshold, not a destination.</p>
+  </header>
+
+  <div class="plate">
+    <p class="lede">
+      <em>Vestibule Quarterly</em> collects writing, images, and marginalia from
+      the entryways of ideas — the waiting rooms, antechambers, and thresholds we
+      pass through on the way to somewhere else. Issue One is being assembled.
+      Leave an address and we'll tell you when the door opens.
+    </p>
+    <div class="aside">
+      <div class="issue">
+        <span><span class="no">№ 01</span> &nbsp;<span class="ttl">The Threshold</span></span>
+        <span class="st">Forthcoming</span>
+      </div>
+      <!--
+        Posts to Formspree by default (no backend). Replace the action URL with
+        your own form endpoint, or drop in a Pages Function + D1 to self-host —
+        same recipe as spliffs.org's functions/api/count.js.
+      -->
+      <form class="signup" action="https://formspree.io/f/your-form-id" method="POST">
+        <input type="email" name="email" placeholder="you@example.com" required aria-label="Email address" />
+        <button type="submit">Notify</button>
+      </form>
+      <p class="note">No spam. One note when Issue One ships · <a href="mailto:hello@vestibulequarterly.com">hello@vestibulequarterly.com</a></p>
+    </div>
+  </div>
+</main>
+
+<script src="/gl.js" defer></script>
+<script src="/type.js" defer></script>
+</body>
+</html>

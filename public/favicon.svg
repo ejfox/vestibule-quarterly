@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <rect width="64" height="64" fill="#0b0b0e"/>
+  <!-- a doorway / threshold: a lintel opening onto light -->
+  <rect x="20" y="14" width="24" height="40" fill="none" stroke="#f6f4ef" stroke-width="3"/>
+  <rect x="27" y="22" width="10" height="32" fill="#f6f4ef"/>
+</svg>
