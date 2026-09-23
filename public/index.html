@@ -82,6 +82,8 @@
     text-transform: uppercase; letter-spacing: 0.28em;
     font-size: 0.62rem; color: var(--muted);
   }
+  .bar a { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--faint); padding-bottom: 1px; }
+  .bar a:hover { border-color: var(--ink); }
   .bar .dot::before {
     content: ""; display: inline-block;
     width: 0.5em; height: 0.5em; margin-right: 0.6em;
@@ -111,12 +113,14 @@
   .title {
     font-family: var(--font-display);
     font-weight: 600;
-    line-height: 0.86;
+    line-height: 0.92;              /* room so Q/y descenders don't clip */
     letter-spacing: -0.02em;
-    font-size: clamp(3.2rem, 17vw, 15rem);
+    /* sized to keep the longest word (QUARTERLY, 9 chars) inside the viewport */
+    font-size: clamp(2.4rem, 13.2vw, 13rem);
     text-transform: uppercase;
+    padding-bottom: 0.08em;         /* catch the descender of the outline Q */
   }
-  .title .word { display: block; }
+  .title .word { display: block; white-space: nowrap; }
 
   /* Second word rendered as an outline — the avant-garde stroke pass. */
   .title .word.outline .ltr {
@@ -222,7 +226,7 @@
 <main>
   <div class="bar">
     <span class="dot">Vestibule Quarterly</span>
-    <span>Est. MMXXVI</span>
+    <span><a href="/submissions">Submissions</a> &nbsp;·&nbsp; Est. MMXXVI</span>
   </div>
 
   <header class="masthead">

@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Submissions — Vestibule Quarterly</title>
+<meta name="description" content="What Vestibule Quarterly is looking for, and how to submit." />
+<link rel="canonical" href="https://vestibulequarterly.com/submissions" />
+<meta name="theme-color" content="#f6f4ef" />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+<link rel="preload" href="/fonts/Fraunces-var.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="preload" href="/fonts/SpaceGrotesk-var.woff2" as="font" type="font/woff2" crossorigin />
+
+<style>
+  @font-face {
+    font-family: "Fraunces";
+    src: url("/fonts/Fraunces-var.woff2") format("woff2");
+    font-weight: 100 900; font-display: swap;
+  }
+  @font-face {
+    font-family: "Space Grotesk";
+    src: url("/fonts/SpaceGrotesk-var.woff2") format("woff2");
+    font-weight: 300 700; font-display: swap;
+  }
+
+  :root {
+    --paper: #f6f4ef;
+    --ink:   #0b0b0e;
+    --muted: rgba(11, 11, 14, 0.6);
+    --faint: rgba(11, 11, 14, 0.4);
+    --rule:  rgba(11, 11, 14, 0.18);
+    --font-display: "Fraunces", Georgia, serif;
+    --font-ui: "Space Grotesk", system-ui, -apple-system, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-ui);
+    /* nice neat 12pt body text */
+    font-size: 12pt;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    padding: clamp(1.5rem, 5vw, 3rem);
+  }
+
+  .wrap { max-width: 40rem; margin: 0 auto; }
+
+  /* ---- masthead / nav ---- */
+  .top {
+    display: flex; justify-content: space-between; align-items: baseline;
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 0.75rem; margin-bottom: 2.5rem;
+    text-transform: uppercase; letter-spacing: 0.24em; font-size: 0.6rem;
+  }
+  .top a { color: var(--ink); text-decoration: none; }
+  .top .home { font-weight: 600; }
+
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 600; text-transform: uppercase;
+    font-size: clamp(2.2rem, 8vw, 3.4rem);
+    line-height: 0.95; letter-spacing: -0.01em;
+    margin-bottom: 0.4rem;
+  }
+  .dek {
+    font-family: var(--font-display); font-style: italic; font-weight: 340;
+    font-size: 1.15rem; color: var(--muted); margin-bottom: 2.5rem;
+  }
+
+  h2 {
+    font-family: var(--font-ui);
+    text-transform: uppercase; letter-spacing: 0.16em;
+    font-size: 0.7rem; color: var(--faint);
+    border-bottom: 1px solid var(--rule); padding-bottom: 0.4rem;
+    margin: 2.5rem 0 1rem;
+  }
+
+  p { margin-bottom: 1rem; }
+  p em, li em { font-family: var(--font-display); font-style: italic; }
+  strong { font-weight: 600; }
+
+  ul { list-style: none; margin: 0 0 1rem; }
+  li { padding-left: 1.4rem; position: relative; margin-bottom: 0.6rem; }
+  li::before {
+    content: "—"; position: absolute; left: 0; color: var(--faint);
+  }
+
+  .lead { font-size: 1.05rem; }
+  .lead::first-letter {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: 3.4rem; float: left; line-height: 0.72;
+    padding: 0.05em 0.12em 0 0;
+  }
+
+  .meta {
+    display: grid; grid-template-columns: auto 1fr; gap: 0.25rem 1.25rem;
+    font-size: 0.82rem; color: var(--muted);
+    border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
+    padding: 1rem 0; margin: 1.5rem 0;
+  }
+  .meta dt { text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.62rem; color: var(--faint); align-self: baseline; }
+  .meta dd { margin: 0; }
+
+  /* ---- submission form ---- */
+  .form-card {
+    border: 1px solid var(--ink);
+    padding: clamp(1.25rem, 4vw, 2rem);
+    margin-top: 1.5rem;
+    background: rgba(255,255,255,0.35);
+  }
+  .field { margin-bottom: 1.1rem; }
+  .field label {
+    display: block; text-transform: uppercase; letter-spacing: 0.12em;
+    font-size: 0.62rem; color: var(--muted); margin-bottom: 0.4rem;
+  }
+  .field input, .field select, .field textarea {
+    width: 100%; border: 1px solid var(--rule); background: var(--paper);
+    color: var(--ink); font: inherit; font-size: 0.95rem;
+    padding: 0.6rem 0.7rem;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    outline: none; border-color: var(--ink);
+  }
+  .field textarea { resize: vertical; min-height: 7rem; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media (max-width: 520px) { .row { grid-template-columns: 1fr; } }
+
+  button.submit {
+    border: 1px solid var(--ink); background: var(--ink); color: var(--paper);
+    font: inherit; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em;
+    font-size: 0.72rem; padding: 0.8rem 1.4rem; cursor: pointer;
+    transition: background .2s, color .2s;
+  }
+  button.submit:hover { background: var(--paper); color: var(--ink); }
+
+  .thanks {
+    display: none; border: 1px solid var(--ink); padding: 1rem 1.25rem;
+    margin-top: 1rem; font-family: var(--font-display); font-style: italic;
+  }
+  .thanks.show { display: block; }
+
+  .fallback { font-size: 0.8rem; color: var(--muted); margin-top: 1rem; }
+  .fallback a { color: var(--ink); }
+
+  footer {
+    margin-top: 3.5rem; padding-top: 1.25rem; border-top: 1px solid var(--rule);
+    color: var(--faint); font-size: 0.72rem;
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;
+  }
+  footer a { color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <nav class="top">
+    <a class="home" href="/">← Vestibule Quarterly</a>
+    <span>Submissions</span>
+  </nav>
+
+  <h1>Submissions</h1>
+  <p class="dek">What we're looking for, and how to send it.</p>
+
+  <p class="lead">
+    <em>Vestibule Quarterly</em> is a magazine of the antechamber — the work that
+    happens in doorways, waiting rooms, and thresholds. We want writing and images
+    made in the pause before the thing itself: the moment between stimulus and
+    response, between the shadow and the lit room, between normal mode and the
+    command not yet entered. If a piece lives in that in-between, we want to read it.
+  </p>
+
+  <h2>What we publish</h2>
+  <ul>
+    <li><strong>Essays &amp; criticism</strong> — on liminal spaces, attention,
+      systems and the people caught in them, the small optimizations of a life.</li>
+    <li><strong>Fiction &amp; prose poems</strong> — short. We favor the uncanny,
+      the initiatory, the quietly mythic over the merely strange.</li>
+    <li><strong>Field notes &amp; marginalia</strong> — from the terminal, the
+      lab, the archive, the crossroads. Footnotes welcome; obsession encouraged.</li>
+    <li><strong>Images</strong> — photography, drawing, diagrams, and things that
+      resist the caption.</li>
+  </ul>
+
+  <h2>What we're after</h2>
+  <p>
+    Precision over volume. A clear eye. Curiosity that has done its reading. We
+    like work that treats a mystery as something to enter rather than solve, and
+    that trusts the reader to cross the threshold on their own. Subtlety travels
+    further here than spectacle.
+  </p>
+
+  <h2>The particulars</h2>
+  <dl class="meta">
+    <dt>Length</dt><dd>Prose to ~4,000 words · poetry up to 5 pieces · images at print resolution.</dd>
+    <dt>Form</dt><dd>Paste text or share a link (Google Doc, PDF, portfolio). Simultaneous submissions are fine — just tell us.</dd>
+    <dt>Rights</dt><dd>First publication; rights revert to you on release. We pay contributors.</dd>
+    <dt>Reply</dt><dd>We read every submission and respond, usually within eight weeks.</dd>
+  </dl>
+
+  <h2>Send us your work</h2>
+  <p>Fill this out and we'll be in touch. It goes straight to our submissions inbox.</p>
+
+  <!--
+    ┌─────────────────────────────────────────────────────────────────────────┐
+    │  WIRE THIS TO A GOOGLE FORM (two placeholders to replace):               │
+    │                                                                         │
+    │  1. Create the Google Form with fields matching the ones below.          │
+    │  2. Get the POST target: open the live form → View source / Network →    │
+    │     the action ends in `/formResponse`. Put that whole URL in `action`.  │
+    │     It looks like:                                                        │
+    │       https://docs.google.com/forms/d/e/FORM_ID/formResponse             │
+    │  3. Each field posts as `entry.NNNNNNNNNN`. Find each field's entry id    │
+    │     (prefill the form → "Get pre-filled link", or inspect the form) and   │
+    │     replace the `name="entry.XXXX"` placeholders below to match.          │
+    │                                                                         │
+    │  Posting to the hidden iframe means no redirect to Google's ugly page —   │
+    │  we show our own thank-you instead. Also update the .fallback link.       │
+    └─────────────────────────────────────────────────────────────────────────┘
+  -->
+  <form class="form-card"
+        action="https://docs.google.com/forms/d/e/FORM_ID/formResponse"
+        method="POST" target="vq-sink" id="subform">
+    <div class="row">
+      <div class="field">
+        <label for="name">Name</label>
+        <input id="name" name="entry.1000001" type="text" required autocomplete="name" />
+      </div>
+      <div class="field">
+        <label for="email">Email</label>
+        <input id="email" name="entry.1000002" type="email" required autocomplete="email" />
+      </div>
+    </div>
+    <div class="field">
+      <label for="kind">What are you sending?</label>
+      <select id="kind" name="entry.1000003" required>
+        <option value="" disabled selected>Choose one…</option>
+        <option>Essay / criticism</option>
+        <option>Fiction / prose poem</option>
+        <option>Poetry</option>
+        <option>Field notes / marginalia</option>
+        <option>Images / visual</option>
+        <option>Something else</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="title">Working title</label>
+      <input id="title" name="entry.1000004" type="text" />
+    </div>
+    <div class="field">
+      <label for="link">Link to the work (Google Doc, PDF, portfolio)</label>
+      <input id="link" name="entry.1000005" type="url" placeholder="https://" />
+    </div>
+    <div class="field">
+      <label for="pitch">The work, or a note about it</label>
+      <textarea id="pitch" name="entry.1000006" placeholder="Paste it, or tell us what it is and why it belongs in the doorway."></textarea>
+    </div>
+    <button class="submit" type="submit">Send submission</button>
+    <p class="fallback">
+      Form not loading? Email <a href="mailto:submissions@vestibulequarterly.com">submissions@vestibulequarterly.com</a>,
+      or <a href="https://docs.google.com/forms/d/e/FORM_ID/viewform" target="_blank" rel="noopener">open the form directly</a>.
+    </p>
+  </form>
+
+  <div class="thanks" id="thanks">
+    Received. Thank you — we read everything, and we'll write back. Keep an eye on
+    the doorway.
+  </div>
+
+  <!-- hidden target so the Google Form POST doesn't navigate away -->
+  <iframe name="vq-sink" style="display:none" title="submission sink"></iframe>
+
+  <footer>
+    <span>© 2026 Vestibule Quarterly</span>
+    <span><a href="/">Home</a> · <a href="mailto:submissions@vestibulequarterly.com">submissions@vestibulequarterly.com</a></span>
+  </footer>
+
+</div>
+
+<script>
+  // Show our own thank-you once the hidden iframe receives Google's response.
+  // (First load event is the initial blank iframe; ignore it.)
+  (function () {
+    var form = document.getElementById('subform');
+    var sink = document.getElementsByName('vq-sink')[0];
+    var thanks = document.getElementById('thanks');
+    var submitted = false;
+    if (form) form.addEventListener('submit', function () { submitted = true; });
+    if (sink) sink.addEventListener('load', function () {
+      if (!submitted) return;
+      form.style.display = 'none';
+      thanks.classList.add('show');
+      thanks.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+  })();
+</script>
+</body>
+</html>

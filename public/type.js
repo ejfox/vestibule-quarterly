@@ -41,18 +41,24 @@
   if (reduce) return;
 
   // Perpetual axis drift, one phase offset per word.
-  const cfg = words.map((el, i) => ({ el, phase: i * 2.3 }));
+  // Only SOFT (terminal rounding) is animated — it changes glyph shape without
+  // changing advance width, so the line never reflows and nothing shifts.
+  // opsz + wght are FIXED per word; a static WONK is baked into a couple of
+  // words for avant-garde character (also metrics-stable once set).
+  const OPSZ = 110, WGHT = 560;
+  const cfg = words.map((el, i) => ({
+    el,
+    phase: i * 2.3,
+    wonk: i % 2 === 1 ? 1 : 0, // second word gets a permanent wonk
+  }));
   const t0 = performance.now();
 
   function tick(now) {
     const t = (now - t0) / 1000;
-    for (const { el, phase } of cfg) {
-      const wght = 380 + 320 * (0.5 + 0.5 * Math.sin(t * 0.35 + phase));
-      const soft = 55  * (0.5 + 0.5 * Math.sin(t * 0.23 + phase * 1.7));
-      const wonk = Math.sin(t * 0.19 + phase * 0.7) > 0.6 ? 1 : 0;
-      const opsz = 80 + 64 * (0.5 + 0.5 * Math.sin(t * 0.3 + phase));
+    for (const { el, phase, wonk } of cfg) {
+      const soft = 50 * (0.5 + 0.5 * Math.sin(t * 0.28 + phase)); // 0..50, breathing
       el.style.fontVariationSettings =
-        `"opsz" ${opsz.toFixed(1)}, "wght" ${wght.toFixed(0)}, "SOFT" ${soft.toFixed(1)}, "WONK" ${wonk}`;
+        `"opsz" ${OPSZ}, "wght" ${WGHT}, "SOFT" ${soft.toFixed(1)}, "WONK" ${wonk}`;
     }
     requestAnimationFrame(tick);
   }
