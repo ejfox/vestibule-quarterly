@@ -1,9 +1,4 @@
-/*
- * submit-form.js — the submissions form.
- *
- * Posts the fields as JSON to our Pages Function (functions/api/submit.js → D1)
- * without a page reload, then hides the form and reveals the thank-you note.
- */
+// submissions form → POST /api/submit, hide form and show #thanks on success
 (() => {
   const form = document.getElementById('subform');
   if (!form) return;

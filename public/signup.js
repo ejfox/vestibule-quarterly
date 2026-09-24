@@ -1,9 +1,4 @@
-/*
- * signup.js — the "notify me" form on the landing page.
- *
- * Posts the email as JSON to our Pages Function (functions/api/subscribe.js → D1)
- * without a page reload, then swaps the form for a confirmation line (.done).
- */
+// signup form → POST /api/subscribe, swap in the .done state on success
 (() => {
   const form = document.querySelector('form.signup[data-ajax]');
   if (!form) return;
