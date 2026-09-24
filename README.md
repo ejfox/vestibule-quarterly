@@ -27,6 +27,8 @@ public/
   style.css             # ALL styling for both pages (colors/type in TOKENS)
   gl.js                 # WebGL domain-warp "ink on paper" background
   type.js               # fades the masthead in once the fonts are ready
+  signup.js             # landing-page "notify me" form → /api/subscribe
+  submit-form.js        # submissions form → /api/submit
   favicon.svg           # threshold / doorway mark (theme-aware)
   fonts/
     Fraunces-var.woff2      # variable display serif (latin subset)

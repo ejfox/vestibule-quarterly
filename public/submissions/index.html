@@ -121,40 +121,6 @@
 
 </div>
 
-<script>
-  // Submit via our own Pages Function → D1. No reload, no third party.
-  (function () {
-    var form = document.getElementById('subform');
-    var thanks = document.getElementById('thanks');
-    var note = form && form.querySelector('[data-note]');
-    var button = form && form.querySelector('button.submit');
-    if (!form) return;
-    form.addEventListener('submit', async function (e) {
-      e.preventDefault();
-      var payload = {};
-      new FormData(form).forEach(function (v, k) { payload[k] = v; });
-      if (button) { button.disabled = true; button.textContent = 'Sending…'; }
-      try {
-        var res = await fetch(form.action, {
-          method: 'POST',
-          headers: { 'content-type': 'application/json' },
-          body: JSON.stringify(payload),
-        });
-        var data = await res.json();
-        if (res.ok && data.ok) {
-          form.style.display = 'none';
-          thanks.classList.add('show');
-          thanks.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        } else {
-          if (note) note.textContent = data.error || 'Something went wrong. Try again.';
-          if (button) { button.disabled = false; button.textContent = 'Send submission'; }
-        }
-      } catch (_) {
-        if (note) note.textContent = 'Network trouble. Try again in a moment.';
-        if (button) { button.disabled = false; button.textContent = 'Send submission'; }
-      }
-    });
-  })();
-</script>
+<script src="/submit-form.js" defer></script>
 </body>
 </html>

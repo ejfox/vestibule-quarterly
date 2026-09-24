@@ -102,32 +102,6 @@
 
 <script src="/gl.js" defer></script>
 <script src="/type.js" defer></script>
-<script>
-  // Notify signup → POST to our Pages Function, no page reload.
-  (function () {
-    var form = document.querySelector('form.signup[data-ajax]');
-    if (!form) return;
-    var note = document.querySelector('[data-note]');
-    form.addEventListener('submit', async function (e) {
-      e.preventDefault();
-      var email = form.querySelector('input[name=email]').value.trim();
-      try {
-        var res = await fetch(form.action, {
-          method: 'POST',
-          headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ email: email }),
-        });
-        var data = await res.json();
-        if (res.ok && data.ok) {
-          form.classList.add('done');
-        } else if (note) {
-          note.textContent = data.error || 'Something went wrong. Try again.';
-        }
-      } catch (_) {
-        if (note) note.textContent = 'Network trouble. Try again.';
-      }
-    });
-  })();
-</script>
+<script src="/signup.js" defer></script>
 </body>
 </html>
