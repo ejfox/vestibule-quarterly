@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#f6f4ef" media="(prefers-color-scheme: light)" />
 <meta name="theme-color" content="#0d0d10" media="(prefers-color-scheme: dark)" />
 
-<!-- Open Graph -->
+<!-- Open Graph / social share text (COPY) -->
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Vestibule Quarterly" />
 <meta property="og:url" content="https://vestibulequarterly.com/" />
@@ -33,12 +33,24 @@
 <div class="scrim" aria-hidden="true"></div>
 
 <main>
+
+  <!-- ============================ TOP BAR (COPY) ============================ -->
   <div class="bar">
     <span class="dot">Vestibule Quarterly</span>
     <span><a href="/submissions">Submissions</a> &nbsp;·&nbsp; Est. MMXXVI</span>
   </div>
 
+
   <header class="masthead">
+
+    <!-- ============================== SEAL (COPY) ==============================
+         The words in the mark are, in order:
+           1. the rotating ring text  (line 'RING' below)
+           2. the big number          ('CORE — number')
+           3. the issue name          ('CORE — issue name')
+           4. the tagline             ('CORE — tagline')
+         Everything else in the <svg> is geometry — leave it alone.
+         Update the aria-label to match when you change the words. -->
     <h1 class="seal" aria-label="Vestibule Quarterly, Issue No. 1, Normal Mode">
       <svg viewBox="0 0 1000 1000" role="img">
         <defs>
@@ -57,45 +69,72 @@
         <circle class="hair" cx="500" cy="500" r="330" />
         <circle class="hair" cx="500" cy="500" r="318" />
 
-        <!-- the spinning wordmark; textLength forces it to meet end-to-end -->
         <g class="ring-spin">
           <text class="ring-text" font-size="112" letter-spacing="2">
+            <!-- RING (COPY): keep the trailing ' · ' so the loop joins cleanly -->
             <textPath href="#ring" startOffset="0" textLength="2639" lengthAdjust="spacingAndGlyphs">
               VESTIBULE QUARTERLY · A MAGAZINE OF THE SPACES BETWEEN ·
             </textPath>
           </text>
         </g>
 
-        <!-- static core -->
+        <!-- CORE — number (the 'No' is a superscript 'o' beside the N) -->
         <text class="core-no" x="500" y="510" text-anchor="middle">N<tspan class="sup" dy="-70">o</tspan><tspan dy="70"> 01</tspan></text>
+        <!-- CORE — issue name -->
         <text class="core-issue" x="500" y="600" text-anchor="middle">Normal Mode</text>
+        <!-- CORE — tagline -->
         <text class="core-tag" x="500" y="650" text-anchor="middle">Forthcoming · MMXXVI</text>
       </svg>
     </h1>
-    <p class="strap">A magazine for the <em>pause</em> before the thing itself.</p>
+
+    <!-- ============================= STRAP (COPY) =============================
+         Big line under the seal. <em> flips to upright roman for emphasis. -->
+    <p class="strap">
+      A magazine for the <em>pause</em> before the thing itself.
+    </p>
+
   </header>
 
+
   <div class="plate">
+
+    <!-- ============================== LEDE (COPY) ==============================
+         The opening paragraph. The first letter gets the big drop cap. -->
     <p class="lede">
       <em>Vestibule Quarterly</em> is a magazine about waiting rooms, thresholds,
-      and the moment before you act. We publish essays, fiction, and images made
-      in that pause. Issue One is in the works. Leave your email and we'll tell
-      you when it's out.
+      and the moment before you act.
+      We publish essays, fiction, and images made in that pause.
+      Issue One is in the works.
+      Leave your email and we'll tell you when it's out.
     </p>
+
     <div class="aside">
+
+      <!-- ============================ ISSUE (COPY) ============================
+           The current-issue line: number · title · status. -->
       <div class="issue">
         <span><span class="no">№ 01</span> &nbsp;<span class="ttl">Normal Mode</span></span>
         <span class="st">Forthcoming</span>
       </div>
-      <p class="issue-dek">Our first issue is about defaults and habit, and the
-        moment they stop working.</p>
 
-      <!-- Posts JSON to our own Pages Function (functions/api/subscribe.js → D1). -->
+      <!-- ISSUE BLURB (COPY) -->
+      <p class="issue-dek">
+        Our first issue is about defaults and habit, and the moment they stop working.
+      </p>
+
+      <!-- ===== SIGNUP — posts to /api/subscribe (functions/api/subscribe.js → D1)
+           Editable copy: the input placeholder and the button label. -->
       <form class="signup" action="/api/subscribe" method="POST" data-ajax>
         <input type="email" name="email" placeholder="you@example.com" required aria-label="Email address" />
         <button type="submit">Notify</button>
       </form>
-      <p class="note" data-note>One email when Issue One is out, nothing else · <a href="mailto:hello@vestibulequarterly.com">hello@vestibulequarterly.com</a></p>
+
+      <!-- NOTE under the signup (COPY) -->
+      <p class="note" data-note>
+        One email when Issue One is out, nothing else
+        · <a href="mailto:hello@vestibulequarterly.com">hello@vestibulequarterly.com</a>
+      </p>
+
     </div>
   </div>
 </main>

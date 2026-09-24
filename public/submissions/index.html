@@ -18,20 +18,26 @@
 <body class="doc">
 <div class="wrap">
 
+  <!-- ============================== NAV (COPY) ============================== -->
   <nav class="top">
     <a class="home" href="/">← Vestibule Quarterly</a>
     <span>Submissions</span>
   </nav>
 
+  <!-- ============================= INTRO (COPY) =============================
+       Page title, italic sub-line, then the opening paragraph (drop cap). -->
   <h1>Submissions</h1>
   <p class="dek">What we're looking for, and how to send it.</p>
 
   <p class="lead">
     <em>Vestibule Quarterly</em> is a magazine about thresholds and waiting rooms,
-    and the moment before you act. We want writing and images made in that pause.
+    and the moment before you act.
+    We want writing and images made in that pause.
     If that sounds like your work, send it.
   </p>
 
+  <!-- ========================= WHAT WE PUBLISH (COPY) =========================
+       Each item: <strong>lead-in.</strong> then a sentence or two. -->
   <h2>What we publish</h2>
   <ul>
     <li><strong>Essays and criticism.</strong> About attention, habit, and the
@@ -43,19 +49,24 @@
     <li><strong>Images.</strong> Photography, drawing, and diagrams.</li>
   </ul>
 
+  <!-- =========================== ISSUE ONE (COPY) =========================== -->
   <h2>Issue One: <em>Normal Mode</em></h2>
   <p>
-    We're reading now for our first issue, <strong>Normal Mode</strong>. It's
-    about defaults and habit: the state you keep returning to, and the moment it
-    stops working. Send us work about control and how it fails.
+    We're reading now for our first issue, <strong>Normal Mode</strong>.
+    It's about defaults and habit: the state you keep returning to, and the
+    moment it stops working.
+    Send us work about control and how it fails.
   </p>
 
+  <!-- ========================= WHAT WE'RE AFTER (COPY) ========================= -->
   <h2>What we're after</h2>
   <p>
-    We'd rather read something precise and curious than something loud. We like
-    work that respects the reader and doesn't over-explain itself.
+    We'd rather read something precise and curious than something loud.
+    We like work that respects the reader and doesn't over-explain itself.
   </p>
 
+  <!-- ========================= THE PARTICULARS (COPY) =========================
+       A definition list — each <dt> is the label, each <dd> is the detail. -->
   <h2>The particulars</h2>
   <dl class="meta">
     <dt>Length</dt><dd>Prose to ~4,000 words · poetry up to 5 pieces · images at print resolution.</dd>
@@ -64,11 +75,16 @@
     <dt>Reply</dt><dd>We read every submission and respond, usually within eight weeks.</dd>
   </dl>
 
+  <!-- ========================= SEND US YOUR WORK (COPY) =========================
+       Intro line, then the form. The form's editable copy is the field
+       <label>s, the <option>s in the dropdown, and the placeholders. -->
   <h2>Send us your work</h2>
-  <p>Fill this out and we'll be in touch. It goes straight to our inbox. No
-    third-party form, no account needed.</p>
+  <p>
+    Fill this out and we'll be in touch.
+    It goes straight to our inbox. No third-party form, no account needed.
+  </p>
 
-  <!-- Posts JSON to our own Pages Function (functions/api/submit.js → D1). -->
+  <!-- form posts to /api/submit (functions/api/submit.js → D1) -->
   <form class="form-card" action="/api/submit" method="POST" id="subform">
     <div class="row">
       <div class="field">
@@ -105,15 +121,18 @@
       <textarea id="pitch" name="pitch" placeholder="Paste it, or tell us what it is."></textarea>
     </div>
     <button class="submit" type="submit">Send submission</button>
+    <!-- fallback line under the button (COPY) -->
     <p class="fallback" data-note>
       Prefer email? <a href="mailto:submissions@vestibulequarterly.com">submissions@vestibulequarterly.com</a>.
     </p>
   </form>
 
+  <!-- THANK-YOU note, shown after a successful submit (COPY) -->
   <div class="thanks" id="thanks">
     Thanks. We read everything, and we'll write back.
   </div>
 
+  <!-- ============================= FOOTER (COPY) ============================= -->
   <footer>
     <span>© 2026 Vestibule Quarterly</span>
     <span><a href="/">Home</a> · <a href="mailto:submissions@vestibulequarterly.com">submissions@vestibulequarterly.com</a></span>
