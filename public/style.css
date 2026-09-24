@@ -183,8 +183,8 @@ main {
 .lede em { font-family: var(--font-display); font-style: italic; }
 .lede::first-letter {
   font-family: var(--font-display); font-weight: 600;
-  font-size: 3.6em; line-height: 0.7; float: left;
-  padding: 0.06em 0.1em 0 0;
+  -webkit-initial-letter: 3; initial-letter: 3;  /* proper cap/baseline alignment */
+  margin-right: 0.1em;
 }
 
 .aside { display: flex; flex-direction: column; gap: 1.25rem; }
@@ -267,9 +267,9 @@ h1 {
   font-size: 1.15rem; color: var(--muted); margin-bottom: 2.5rem;
 }
 h2 {
-  font-family: var(--font-ui);
+  font-family: var(--font-display);   /* serif section titles (per Giuseppe) */
   text-transform: uppercase; letter-spacing: 0.16em;
-  font-size: 0.7rem; color: var(--faint);
+  font-size: 0.72rem; color: var(--faint);
   border-bottom: 1px solid var(--rule); padding-bottom: 0.4rem;
   margin: 2.5rem 0 1rem;
 }
@@ -285,19 +285,20 @@ li::before { content: "—"; position: absolute; left: 0; color: var(--faint); }
 .lead { font-size: 1.05rem; }
 .lead::first-letter {
   font-family: var(--font-display); font-weight: 600;
-  font-size: 3.4rem; float: left; line-height: 0.72;
-  padding: 0.05em 0.12em 0 0;
+  -webkit-initial-letter: 3; initial-letter: 3;  /* proper cap/baseline alignment */
+  margin-right: 0.12em;
 }
 
 .meta {
-  display: grid; grid-template-columns: auto 1fr; gap: 0.25rem 1.25rem;
+  display: grid; grid-template-columns: auto 1fr; gap: 0.55rem 1.25rem;
+  align-items: end;                      /* bottom-align each label with its value */
   font-size: 0.82rem; color: var(--muted);
-  border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
-  padding: 1rem 0; margin: 1.5rem 0;
+  border-bottom: 1px solid var(--rule);  /* dropped the redundant top rule */
+  padding-bottom: 1rem; margin: 1rem 0 1.5rem;
 }
 .meta dt {
   text-transform: uppercase; letter-spacing: 0.1em;
-  font-size: 0.62rem; color: var(--faint); align-self: baseline;
+  font-size: 0.62rem; color: var(--faint);
 }
 .meta dd { margin: 0; }
 
