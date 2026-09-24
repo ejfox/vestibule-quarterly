@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>Vestibule Quarterly</title>
-<meta name="description" content="Vestibule Quarterly — a small magazine about the spaces between. Published four times a year. Issue One forthcoming." />
+<meta name="description" content="Vestibule Quarterly is a small magazine published four times a year. Issue One is in the works." />
 <link rel="canonical" href="https://vestibulequarterly.com/" />
 <meta name="theme-color" content="#f6f4ef" media="(prefers-color-scheme: light)" />
 <meta name="theme-color" content="#0d0d10" media="(prefers-color-scheme: dark)" />
@@ -14,11 +14,11 @@
 <meta property="og:site_name" content="Vestibule Quarterly" />
 <meta property="og:url" content="https://vestibulequarterly.com/" />
 <meta property="og:title" content="Vestibule Quarterly" />
-<meta property="og:description" content="A small magazine about the spaces between. Issue One forthcoming." />
+<meta property="og:description" content="A small quarterly magazine. Issue One is in the works." />
 
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:title" content="Vestibule Quarterly" />
-<meta name="twitter:description" content="A small magazine about the spaces between. Issue One forthcoming." />
+<meta name="twitter:description" content="A small quarterly magazine. Issue One is in the works." />
 
 <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 
@@ -43,9 +43,12 @@
   :root {
     --paper: #f6f4ef;
     --ink:   #0b0b0e;
-    --muted: rgba(11, 11, 14, 0.55);
-    --faint: rgba(11, 11, 14, 0.38);
-    --surface: rgba(246, 244, 239, 0.6);
+    --muted: rgba(11, 11, 14, 0.62);
+    --faint: rgba(11, 11, 14, 0.40);
+    --surface: rgba(246, 244, 239, 0.72);
+    /* paper veil that sits between the shader and the type so text always
+       has a contrast floor over the moving ink wash */
+    --scrim: rgba(246, 244, 239, 0.62);
     --font-display: "Fraunces", Georgia, serif;
     --font-ui: "Space Grotesk", system-ui, -apple-system, sans-serif;
   }
@@ -53,9 +56,10 @@
     :root {
       --paper: #0d0d10;
       --ink:   #f2efe8;
-      --muted: rgba(242, 239, 232, 0.55);
-      --faint: rgba(242, 239, 232, 0.36);
-      --surface: rgba(255, 255, 255, 0.06);
+      --muted: rgba(242, 239, 232, 0.60);
+      --faint: rgba(242, 239, 232, 0.38);
+      --surface: rgba(255, 255, 255, 0.08);
+      --scrim: rgba(13, 13, 16, 0.60);
     }
   }
 
@@ -76,6 +80,15 @@
   #gl {
     position: fixed; inset: 0; width: 100%; height: 100%;
     z-index: 0; display: block; pointer-events: none;
+  }
+
+  /* legibility scrim — a paper veil concentrated behind the reading column,
+     fading to pure shader at the corners so the imagery still breathes */
+  .scrim {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(135% 105% at 50% 44%,
+        var(--scrim) 0%, var(--scrim) 34%, transparent 78%);
   }
 
   main {
@@ -137,6 +150,8 @@
   }
   @keyframes seal-spin { to { transform: rotate(360deg); } }
 
+  /* soft paper disc behind the core so N° 01 always reads over the wash */
+  .seal .core-halo { fill: var(--paper); opacity: 0.55; }
   .seal .hair { fill: none; stroke: var(--ink); stroke-width: 1.5; }
   .seal .core-no {
     font-family: var(--font-display); font-weight: 600;
@@ -246,6 +261,7 @@
 <body>
 
 <canvas id="gl" aria-hidden="true"></canvas>
+<div class="scrim" aria-hidden="true"></div>
 
 <main>
   <div class="bar">
@@ -254,12 +270,19 @@
   </div>
 
   <header class="masthead">
-    <h1 class="seal" aria-label="Vestibule Quarterly — Issue No. 1, Normal Mode">
+    <h1 class="seal" aria-label="Vestibule Quarterly, Issue No. 1, Normal Mode">
       <svg viewBox="0 0 1000 1000" role="img">
         <defs>
           <!-- the ring the wordmark rides; starts at 12 o'clock, runs clockwise -->
           <path id="ring" d="M 500,80 a 420,420 0 1,1 0,840 a 420,420 0 1,1 0,-840" />
+          <!-- soft blur for the core halo so its edge melts into the wash -->
+          <filter id="soft" x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur stdDeviation="28" />
+          </filter>
         </defs>
+
+        <!-- paper halo lifts the core type off the moving shader -->
+        <circle class="core-halo" cx="500" cy="500" r="220" filter="url(#soft)" />
 
         <!-- hairline rings for the seal / postmark feel -->
         <circle class="hair" cx="500" cy="500" r="330" />
@@ -280,32 +303,30 @@
         <text class="core-tag" x="500" y="650" text-anchor="middle">Forthcoming · MMXXVI</text>
       </svg>
     </h1>
-    <p class="strap">A threshold, <em>not</em> a destination.</p>
+    <p class="strap">A magazine for the <em>pause</em> before the thing itself.</p>
   </header>
 
   <div class="plate">
     <p class="lede">
-      <em>Vestibule Quarterly</em> is a magazine of the antechamber — the liminal
-      half-second between stimulus and response, between the shadow and the lit
-      room, between normal mode and the command not yet entered. We publish what
-      happens in the doorway: the crossings, the initiations, the quiet
-      optimizations of the self. Issue One is being assembled — leave an address
-      and we'll open the door.
+      <em>Vestibule Quarterly</em> is a magazine about waiting rooms, thresholds,
+      and the moment before you act. We publish essays, fiction, and images made
+      in that pause. Issue One is in the works. Leave your email and we'll tell
+      you when it's out.
     </p>
     <div class="aside">
       <div class="issue">
         <span><span class="no">№ 01</span> &nbsp;<span class="ttl">Normal Mode</span></span>
         <span class="st">Forthcoming</span>
       </div>
-      <p class="issue-dek">On conditioning, keybindings, and the escape key — the
-        modal self, and the moment it stops responding.</p>
+      <p class="issue-dek">Our first issue is about defaults and habit, and the
+        moment they stop working.</p>
 
       <!-- Posts JSON to our own Pages Function (functions/api/subscribe.js → D1). -->
       <form class="signup" action="/api/subscribe" method="POST" data-ajax>
         <input type="email" name="email" placeholder="you@example.com" required aria-label="Email address" />
         <button type="submit">Notify</button>
       </form>
-      <p class="note" data-note>No noise. One signal when the door opens · <a href="mailto:hello@vestibulequarterly.com">hello@vestibulequarterly.com</a></p>
+      <p class="note" data-note>One email when Issue One is out, nothing else · <a href="mailto:hello@vestibulequarterly.com">hello@vestibulequarterly.com</a></p>
     </div>
   </div>
 </main>
@@ -331,10 +352,10 @@
         if (res.ok && data.ok) {
           form.classList.add('done');
         } else if (note) {
-          note.textContent = data.error || 'Something went wrong — try again.';
+          note.textContent = data.error || 'Something went wrong. Try again.';
         }
       } catch (_) {
-        if (note) note.textContent = 'Network hiccup — try again.';
+        if (note) note.textContent = 'Network trouble. Try again.';
       }
     });
   })();

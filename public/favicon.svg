@@ -1,6 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
-  <rect width="64" height="64" fill="#0b0b0e"/>
+  <style>
+    /* theme-aware so the mark reads on both light and dark browser chrome */
+    :root { --bg: #f6f4ef; --fg: #0b0b0e; }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg: #0d0d10; --fg: #f2efe8; }
+    }
+    .bg { fill: var(--bg); }
+    .fg { fill: var(--fg); }
+    .frame { fill: none; stroke: var(--fg); }
+  </style>
+  <rect class="bg" width="64" height="64"/>
   <!-- a doorway / threshold: a lintel opening onto light -->
-  <rect x="20" y="14" width="24" height="40" fill="none" stroke="#f6f4ef" stroke-width="3"/>
-  <rect x="27" y="22" width="10" height="32" fill="#f6f4ef"/>
+  <rect class="frame" x="20" y="14" width="24" height="40" stroke-width="3"/>
+  <rect class="fg" x="27" y="22" width="10" height="32"/>
 </svg>

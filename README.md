@@ -1,7 +1,7 @@
 # Vestibule Quarterly
 
-A small magazine about the spaces between — entryways, waiting rooms, and
-antechambers of ideas. Live at **https://vestibulequarterly.com**.
+A small quarterly magazine about thresholds and waiting rooms, and the moment
+before you act. Live at **https://vestibulequarterly.com**.
 
 The landing page is one avant-garde composition: a full-bleed WebGL ink field
 behind an animated variable-font masthead, with an issue index and a "notify

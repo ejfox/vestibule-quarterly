@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>Submissions — Vestibule Quarterly</title>
+<title>Submissions · Vestibule Quarterly</title>
 <meta name="description" content="What Vestibule Quarterly is looking for, and how to submit." />
 <link rel="canonical" href="https://vestibulequarterly.com/submissions" />
 <meta name="theme-color" content="#f6f4ef" media="(prefers-color-scheme: light)" />
@@ -178,54 +178,46 @@
   <p class="dek">What we're looking for, and how to send it.</p>
 
   <p class="lead">
-    <em>Vestibule Quarterly</em> is a magazine of the antechamber — the work that
-    happens in doorways, waiting rooms, and thresholds. We want writing and images
-    made in the pause before the thing itself: the moment between stimulus and
-    response, between the shadow and the lit room, between normal mode and the
-    command not yet entered. If a piece lives in that in-between, we want to read it.
+    <em>Vestibule Quarterly</em> is a magazine about thresholds and waiting rooms,
+    and the moment before you act. We want writing and images made in that pause.
+    If that sounds like your work, send it.
   </p>
 
   <h2>What we publish</h2>
   <ul>
-    <li><strong>Essays &amp; criticism</strong> — on liminal spaces, attention,
-      systems and the people caught in them, the small optimizations of a life.</li>
-    <li><strong>Fiction &amp; prose poems</strong> — short. We favor the uncanny,
-      the initiatory, the quietly mythic over the merely strange.</li>
-    <li><strong>Field notes &amp; marginalia</strong> — from the terminal, the
-      lab, the archive, the crossroads. Footnotes welcome; obsession encouraged.</li>
-    <li><strong>Images</strong> — photography, drawing, diagrams, and things that
-      resist the caption.</li>
+    <li><strong>Essays and criticism.</strong> About attention, habit, and the
+      systems people get caught in.</li>
+    <li><strong>Fiction and prose poems.</strong> Kept short. We like the strange
+      and the unsettling.</li>
+    <li><strong>Field notes and marginalia.</strong> From wherever you work.
+      Footnotes welcome.</li>
+    <li><strong>Images.</strong> Photography, drawing, and diagrams.</li>
   </ul>
 
-  <h2>Issue One — <em>Normal Mode</em></h2>
+  <h2>Issue One: <em>Normal Mode</em></h2>
   <p>
-    We're reading now for our first issue, <strong>Normal Mode</strong>: on
-    conditioning, keybindings, and the escape key. The default state you return
-    to and the reflexes that keep you there — the schedule of reinforcement, the
-    muscle memory, the chord you hit without looking — and the moment the mode
-    drops out from under you and stops responding. Send us work about control and
-    its failure: the breakdown, the loop, the command that finally doesn't take.
+    We're reading now for our first issue, <strong>Normal Mode</strong>. It's
+    about defaults and habit: the state you keep returning to, and the moment it
+    stops working. Send us work about control and how it fails.
   </p>
 
   <h2>What we're after</h2>
   <p>
-    Precision over volume. A clear eye. Curiosity that has done its reading. We
-    like work that treats a mystery as something to enter rather than solve, and
-    that trusts the reader to cross the threshold on their own. Subtlety travels
-    further here than spectacle.
+    We'd rather read something precise and curious than something loud. We like
+    work that respects the reader and doesn't over-explain itself.
   </p>
 
   <h2>The particulars</h2>
   <dl class="meta">
     <dt>Length</dt><dd>Prose to ~4,000 words · poetry up to 5 pieces · images at print resolution.</dd>
-    <dt>Form</dt><dd>Paste text or share a link (Google Doc, PDF, portfolio). Simultaneous submissions are fine — just tell us.</dd>
+    <dt>Form</dt><dd>Paste text or share a link (Google Doc, PDF, portfolio). Simultaneous submissions are fine; just tell us.</dd>
     <dt>Rights</dt><dd>First publication; rights revert to you on release. We pay contributors.</dd>
     <dt>Reply</dt><dd>We read every submission and respond, usually within eight weeks.</dd>
   </dl>
 
   <h2>Send us your work</h2>
-  <p>Fill this out and we'll be in touch. It posts straight to our submissions
-    inbox — no third-party form, no account required.</p>
+  <p>Fill this out and we'll be in touch. It goes straight to our inbox. No
+    third-party form, no account needed.</p>
 
   <!-- Posts JSON to our own Pages Function (functions/api/submit.js → D1). -->
   <form class="form-card" action="/api/submit" method="POST" id="subform">
@@ -261,7 +253,7 @@
     </div>
     <div class="field">
       <label for="pitch">The work, or a note about it</label>
-      <textarea id="pitch" name="pitch" placeholder="Paste it, or tell us what it is and why it belongs in the doorway."></textarea>
+      <textarea id="pitch" name="pitch" placeholder="Paste it, or tell us what it is."></textarea>
     </div>
     <button class="submit" type="submit">Send submission</button>
     <p class="fallback" data-note>
@@ -270,8 +262,7 @@
   </form>
 
   <div class="thanks" id="thanks">
-    Received. Thank you — we read everything, and we'll write back. Keep an eye on
-    the doorway.
+    Thanks. We read everything, and we'll write back.
   </div>
 
   <footer>
@@ -306,11 +297,11 @@
           thanks.classList.add('show');
           thanks.scrollIntoView({ behavior: 'smooth', block: 'center' });
         } else {
-          if (note) note.textContent = data.error || 'Something went wrong — try again.';
+          if (note) note.textContent = data.error || 'Something went wrong. Try again.';
           if (button) { button.disabled = false; button.textContent = 'Send submission'; }
         }
       } catch (_) {
-        if (note) note.textContent = 'Network hiccup — try again in a moment.';
+        if (note) note.textContent = 'Network trouble. Try again in a moment.';
         if (button) { button.disabled = false; button.textContent = 'Send submission'; }
       }
     });
