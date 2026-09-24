@@ -22,14 +22,17 @@ as [spliffs.org](https://spliffs.org): static `public/` on Cloudflare Pages.
 
 ```
 public/
-  index.html            # the page — all layout/CSS inline
+  index.html            # landing page — mostly content, links style.css
+  submissions/index.html  # submissions page — same
+  style.css             # ALL styling for both pages (colors/type in TOKENS)
   gl.js                 # WebGL domain-warp "ink on paper" background
-  type.js               # per-letter reveal + perpetual Fraunces axis drift
-  favicon.svg           # threshold / doorway mark
+  type.js               # fades the masthead in once the fonts are ready
+  favicon.svg           # threshold / doorway mark (theme-aware)
   fonts/
-    Fraunces-var.woff2      # variable: opsz, wght, SOFT, WONK (latin subset)
-    SpaceGrotesk-var.woff2  # variable: wght (latin subset)
-wrangler.toml           # Pages project + output dir
+    Fraunces-var.woff2      # variable display serif (latin subset)
+    SpaceGrotesk-var.woff2  # variable UI sans (latin subset)
+functions/api/          # Pages Functions: subscribe + submit → D1
+wrangler.toml           # Pages project + output dir + D1 binding
 ```
 
 ## The avant-garde bits
