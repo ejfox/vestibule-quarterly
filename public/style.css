@@ -152,7 +152,7 @@ main {
 .masthead {
   flex: 1;
   display: flex; flex-direction: column; justify-content: center;
-  align-items: center; text-align: center;
+  align-items: flex-start; text-align: left;
   gap: clamp(1rem, 3vh, 2rem);
 }
 
@@ -277,8 +277,8 @@ form.signup button {
 form.signup button:hover { background: var(--paper); color: var(--ink); }
 
 .signup.done {
-  border-style: dashed; align-items: center; justify-content: center;
-  padding: 0.75rem;
+  border-style: dashed; align-items: center; justify-content: flex-start;
+  padding: 0.75rem 0.9rem;
 }
 .signup.done::after {
   content: "✓ You're on the list.";
@@ -293,7 +293,7 @@ form.signup button:hover { background: var(--paper); color: var(--ink); }
 
 /* submissions */
 
-.wrap { max-width: 40rem; margin: 0 auto; position: relative; z-index: 1; }
+.wrap { max-width: 40rem; margin: 0; position: relative; z-index: 1; }
 
 .top {
   display: flex; justify-content: space-between; align-items: baseline;
@@ -305,10 +305,10 @@ form.signup button:hover { background: var(--paper); color: var(--ink); }
 .top .home { font-weight: 600; }
 
 /* giant hero illustration at the top of the reading column — modest, centered */
-.hero { margin: 1.25rem auto clamp(1.5rem, 4vw, 2.5rem); max-width: 20rem; }
+.hero { margin: 1.25rem 0 clamp(1.5rem, 4vw, 2.5rem); max-width: 20rem; }
 .hero img {
   width: 100%; height: auto; max-height: 38vh; object-fit: contain;
-  display: block; margin: 0 auto; border: 1px solid var(--rule);
+  display: block; border: 1px solid var(--rule);
 }
 
 h1 {
@@ -361,7 +361,7 @@ li::before { content: "—"; position: absolute; left: 0; color: var(--faint); }
 /* inline dithered prints — matted paper plates (fixed colors, pop in both modes).
    NB: named .print, not .plate — .plate is the home page's hidden reveal grid. */
 .print {
-  margin: 2.75rem auto; max-width: 23rem;
+  margin: 2.75rem 0; max-width: 23rem;
   background: #f4f1ea; padding: 0.7rem; border: 1px solid #0b0b0e;
   box-shadow: 0 2px 24px rgba(0, 0, 0, 0.35);
 }
