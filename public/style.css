@@ -339,15 +339,16 @@ li::before { content: "—"; position: absolute; left: 0; color: var(--faint); }
 }
 .meta dd { margin: 0; }
 
-/* inline dithered plates — matted paper prints (fixed colors, pop in both modes) */
-.plate {
+/* inline dithered prints — matted paper plates (fixed colors, pop in both modes).
+   NB: named .print, not .plate — .plate is the home page's hidden reveal grid. */
+.print {
   margin: 2.75rem auto; max-width: 23rem;
   background: #f4f1ea; padding: 0.7rem; border: 1px solid #0b0b0e;
   box-shadow: 0 2px 24px rgba(0, 0, 0, 0.35);
 }
-.plate--tall { max-width: 20rem; }
-.plate img { display: block; width: 100%; height: auto; }
-.plate figcaption {
+.print--tall { max-width: 20rem; }
+.print img { display: block; width: 100%; height: auto; }
+.print figcaption {
   font-family: var(--font-mono); font-size: 0.56rem; color: #6b6353;
   letter-spacing: 0.02em; line-height: 1.4; margin-top: 0.55rem;
 }
