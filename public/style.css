@@ -483,6 +483,36 @@ li::before { content: "—"; position: absolute; left: 0; color: var(--faint); }
   color: var(--accent-text);
 }
 
+/* open chain — a ticket clipped into the Issue One section */
+.chain {
+  display: flow-root; max-width: 38rem;  /* own BFC: sits beside a floated .print, not under it */
+  border: 1px solid var(--ink); border-left: 6px solid var(--accent);
+  padding: 1.1rem 1.25rem 1.25rem; margin: 2rem 0 1rem;
+  background: var(--paper-hi);
+}
+.chain-tag {
+  font-family: var(--font-mono); text-transform: uppercase;
+  font-size: 0.62rem; letter-spacing: 0.22em; color: var(--accent-text);
+  margin-bottom: 0.35rem;
+}
+.chain-q {
+  font-family: var(--font-display); font-style: italic; font-weight: 300;
+  font-variation-settings: "opsz" 144, "WONK" 1;
+  font-size: clamp(1.8rem, 4.5vw, 2.6rem); line-height: 1; letter-spacing: -0.02em;
+  margin-bottom: 0.7rem;
+}
+.chain-body { font-size: 0.95rem; margin-bottom: 1rem; }
+.chain-go {
+  display: inline-block;
+  font-family: var(--font-mono); text-transform: uppercase;
+  font-size: 0.66rem; letter-spacing: 0.18em;
+  color: var(--paper); background: var(--ink); text-decoration: none;
+  padding: 0.55rem 0.8rem;
+  transition: background .2s, color .2s;
+}
+.chain-go::after { content: " →"; }
+.chain-go:hover { background: var(--accent); color: #181713; }
+
 /* the particulars → a ledger */
 .meta {
   display: grid; grid-template-columns: 6.5rem 1fr;
@@ -638,6 +668,7 @@ footer a { color: var(--muted); }
   .hero img { max-height: 3.5in; width: auto; }
   .print { float: none; rotate: 0deg; box-shadow: none; max-width: 3in; break-inside: avoid; }
   .print::before { display: none; }
+  .chain { background: none; } .chain-go { display: none; }
   .genres img { filter: none; mix-blend-mode: normal; }
   h2 { break-after: avoid; }
   .genres li, .meta dt, .meta dd { break-inside: avoid; }

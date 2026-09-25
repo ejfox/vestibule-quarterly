@@ -31,7 +31,7 @@
 <link rel="preload" href="/fonts/Fraunces-var.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="preload" href="/fonts/SpaceGrotesk-var.woff2" as="font" type="font/woff2" crossorigin />
 
-<link rel="stylesheet" href="/style.css?v=2609250005" />
+<link rel="stylesheet" href="/style.css?v=2609250013" />
 </head>
 <body class="doc">
 
@@ -55,8 +55,8 @@
 <!-- ticker: restates the particulars; aria-hidden since it's decoration -->
 <div class="ticker ticker--band" aria-hidden="true">
   <div class="ticker-track">
-    <span>Call for work · Issue 01 · <em>Using Your Tools</em> · Essays · Fiction · Memes · Code · Chains · Text or video · Max 4000 words · Replies by 01.01.2027 · No slop · </span>
-    <span>Call for work · Issue 01 · <em>Using Your Tools</em> · Essays · Fiction · Memes · Code · Chains · Text or video · Max 4000 words · Replies by 01.01.2027 · No slop · </span>
+    <span>Call for work · Issue 01 · <em>Using Your Tools</em> · Essays · Fiction · Memes · Code · Chains · Text or video · Open chain: LLMs &amp; writing code · Max 4000 words · Replies by 01.01.2027 · No slop · </span>
+    <span>Call for work · Issue 01 · <em>Using Your Tools</em> · Essays · Fiction · Memes · Code · Chains · Text or video · Open chain: LLMs &amp; writing code · Max 4000 words · Replies by 01.01.2027 · No slop · </span>
   </div>
 </div>
 
@@ -115,8 +115,8 @@
     </li>
     <li>
       <strong>Chains</strong>
-      <span>a conversation in parts, in text or video, each piece answering
-        the last. start one, or respond to something already here; we will
+      <span>a conversation in parts, in text or video (a talking head, a
+        screen recording, your terminal at 2am), each piece answering the last. start one, or respond to something already here; we will
         compact and edit the thread into something worth reading (and watching).</span>
       <img src="/art/print-chains-240.webp" srcset="/art/print-chains-240.webp 240w, /art/print-chains-384.webp 384w, /art/print-chains-576.webp 576w"
            sizes="7rem" width="240" height="287" loading="lazy" decoding="async"
@@ -147,6 +147,19 @@
     a dare to use our tools, as lovers of conversing about the best ones
   </p>
 
+  <!-- open chain: the first prompt a Chain can answer. swap it out as chains close -->
+  <aside class="chain" id="open-chain">
+    <p class="chain-tag">Open chain № 001</p>
+    <p class="chain-q">Who's holding the pen?</p>
+    <p class="chain-body">
+      LLMs and writing code. Overdone, sure, and still the thing everyone is
+      talking about. Vibe coding, aura coding, or hand-typing every character
+      in vim out of principle: what has it done to your tools, and to you?
+      Record a take, write a rebuttal, or answer whoever answered last.
+    </p>
+    <a class="chain-go" href="#subform" data-chain>Respond to the chain</a>
+  </aside>
+
   <figure class="print">
     <img src="/art/vesuvius.png" alt="Volaire, The Eruption of Vesuvius" />
     <figcaption>Pierre-Jacques Volaire, The Eruption of Vesuvius (1771) · public domain</figcaption>
@@ -166,7 +179,7 @@
   <!-- the particulars -->
   <h2>The particulars</h2>
   <dl class="meta">
-    <dt>Length</dt><dd>Maximum 4000 words, or about 10 minutes of video.</dd>
+    <dt>Length</dt><dd>Maximum 4000 words, or about 10 minutes of video. A 60-second short counts.</dd>
     <dt>Form</dt><dd>PDF / markdown document / github gist / video (a link to YouTube, Vimeo, or a file we can download).</dd>
     <dt>Rights</dt><dd>You fully own all work. It is published online for free, no ads are run, no money involved (for issue 1 anyway).</dd>
     <dt>Reply</dt><dd>We will reply to everyone by January 1st 2027.</dd>
@@ -234,6 +247,6 @@
 
 </div>
 
-<script src="/submit-form.js" defer></script>
+<script src="/submit-form.js?v=2609250013" defer></script>
 </body>
 </html>

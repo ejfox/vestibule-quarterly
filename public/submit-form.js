@@ -6,6 +6,17 @@
   const note = form.querySelector('[data-note]');
   const button = form.querySelector('button.submit');
 
+  // "respond to the chain" → preselect Chain, say which one in the pitch
+  document.querySelectorAll('[data-chain]').forEach((link) => {
+    link.addEventListener('click', () => {
+      const kind = form.querySelector('#kind');
+      const opt = kind && [...kind.options].find((o) => o.text.startsWith('Chain'));
+      if (opt) kind.value = opt.value;
+      const pitch = form.querySelector('#pitch');
+      if (pitch && !pitch.value) pitch.value = 'Responding to open chain № 001.\n\n';
+    });
+  });
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
