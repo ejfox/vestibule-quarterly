@@ -31,7 +31,7 @@
 <link rel="preload" href="/fonts/Fraunces-var.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="preload" href="/fonts/SpaceGrotesk-var.woff2" as="font" type="font/woff2" crossorigin />
 
-<link rel="stylesheet" href="/style.css?v=2609250013" />
+<link rel="stylesheet" href="/style.css?v=2609250017" />
 </head>
 <body class="doc">
 
@@ -55,8 +55,8 @@
 <!-- ticker: restates the particulars; aria-hidden since it's decoration -->
 <div class="ticker ticker--band" aria-hidden="true">
   <div class="ticker-track">
-    <span>Call for work · Issue 01 · <em>Using Your Tools</em> · Essays · Fiction · Memes · Code · Chains · Text or video · Open chain: LLMs &amp; writing code · Max 4000 words · Replies by 01.01.2027 · No slop · </span>
-    <span>Call for work · Issue 01 · <em>Using Your Tools</em> · Essays · Fiction · Memes · Code · Chains · Text or video · Open chain: LLMs &amp; writing code · Max 4000 words · Replies by 01.01.2027 · No slop · </span>
+    <span>Call for work · Issue 01 · <em>Using Your Tools</em> · Essays · Fiction · Memes · Code · Chains · Text or video · Prompt: LLMs &amp; writing code · Max 4000 words · Replies by 01.01.2027 · No slop · </span>
+    <span>Call for work · Issue 01 · <em>Using Your Tools</em> · Essays · Fiction · Memes · Code · Chains · Text or video · Prompt: LLMs &amp; writing code · Max 4000 words · Replies by 01.01.2027 · No slop · </span>
   </div>
 </div>
 
@@ -116,8 +116,9 @@
     <li>
       <strong>Chains</strong>
       <span>a conversation in parts, in text or video (a talking head, a
-        screen recording, your terminal at 2am), each piece answering the last. start one, or respond to something already here; we will
-        compact and edit the thread into something worth reading (and watching).</span>
+        screen recording, your terminal at 2am), each piece answering the last. you just send
+        your piece; we do the stitching, pairing and editing the thread into
+        something worth reading (and watching).</span>
       <img src="/art/print-chains-240.webp" srcset="/art/print-chains-240.webp 240w, /art/print-chains-384.webp 384w, /art/print-chains-576.webp 576w"
            sizes="7rem" width="240" height="287" loading="lazy" decoding="async"
            alt="A wood engraving by J.-J. Grandville: a crowd of animals in frock coats, a stork, a monkey, a bear, an elephant and a giraffe among them, all talking at once over a wooden rail while smaller creatures chatter below. Caption: Cette protestation fut étouffée par le bruit des conversations particulières." />
@@ -147,17 +148,16 @@
     a dare to use our tools, as lovers of conversing about the best ones
   </p>
 
-  <!-- open chain: the first prompt a Chain can answer. swap it out as chains close -->
-  <aside class="chain" id="open-chain">
-    <p class="chain-tag">Open chain № 001</p>
+  <!-- a prompt for issue one. chains are assembled by us from what comes in -->
+  <aside class="chain" id="prompt">
+    <p class="chain-tag">A prompt, if you want one</p>
     <p class="chain-q">Who's holding the pen?</p>
     <p class="chain-body">
       LLMs and writing code. Overdone, sure, and still the thing everyone is
       talking about. Vibe coding, aura coding, or hand-typing every character
       in vim out of principle: what has it done to your tools, and to you?
-      Record a take, write a rebuttal, or answer whoever answered last.
+      Record a take or write one up; we'll put the answers in conversation.
     </p>
-    <a class="chain-go" href="#subform" data-chain>Respond to the chain</a>
   </aside>
 
   <figure class="print">
@@ -212,7 +212,6 @@
         <option>Fiction</option>
         <option>Meme</option>
         <option>Code</option>
-        <option>Chain (a response to another piece)</option>
         <option>Something else</option>
       </select>
     </div>
@@ -226,7 +225,7 @@
     </div>
     <div class="field">
       <label for="pitch">The work, or a note about it</label>
-      <textarea id="pitch" name="pitch" placeholder="Paste it, link it, or tell us what it is. Responding to another piece? Say which."></textarea>
+      <textarea id="pitch" name="pitch" placeholder="Paste it, link it, or tell us what it is."></textarea>
     </div>
     <button class="submit" type="submit">Send submission</button>
     <p class="fallback" data-note>
@@ -247,6 +246,6 @@
 
 </div>
 
-<script src="/submit-form.js?v=2609250013" defer></script>
+<script src="/submit-form.js?v=2609250017" defer></script>
 </body>
 </html>
