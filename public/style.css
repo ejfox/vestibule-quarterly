@@ -11,6 +11,7 @@
   --surface: rgba(243, 238, 223, 0.72); /* signup box */
   --card:   rgba(251, 248, 239, 0.6);   /* form / print cards */
   --scrim:  rgba(243, 238, 223, 0.62);  /* paper veil behind text */
+  --ruling: rgba(24, 23, 19, 0.16);     /* ruled lines in the textarea */
   --accent:      #e09b4c;   /* amber — fills, caret, dot */
   --accent-text: #8a5418;   /* readable amber — links/hover */
   --font-hero: "Big Shoulders Display", "Arial Narrow", sans-serif;
@@ -29,6 +30,7 @@
     --surface: rgba(255, 255, 255, 0.08);
     --card:   rgba(255, 255, 255, 0.05);
     --scrim:  rgba(23, 20, 15, 0.62);
+    --ruling: rgba(239, 231, 214, 0.30);
     --accent:      #e9b36f;
     --accent-text: #e9b36f;
   }
@@ -91,6 +93,26 @@ body.doc  { font-size: 12pt; line-height: 1.65; }
     background: repeating-linear-gradient(rgba(255, 255, 255, 0.045) 0 1px, transparent 1px 3px);
   }
 }
+
+/* running ticker, shared. quiet by default (home); --band inverts it (submissions) */
+.ticker {
+  display: block; overflow: hidden; white-space: nowrap;
+  color: var(--muted); text-decoration: none;
+  border-block: 1px solid var(--rule);
+  font-family: var(--font-mono); text-transform: uppercase;
+  font-size: 0.66rem; letter-spacing: 0.3em;
+  padding: 0.7rem 0;
+}
+.ticker-track { display: flex; width: max-content; animation: ticker 55s linear infinite; }
+.ticker-track > span { padding-right: 0.3em; }
+.ticker em {
+  font-family: var(--font-display); font-style: italic; text-transform: none;
+  letter-spacing: 0.02em; font-size: 1.35em; color: var(--accent-text);
+}
+a.ticker:hover { color: var(--ink); border-color: var(--ink); }
+a.ticker:hover .ticker-track { animation-play-state: paused; }
+@keyframes ticker { to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) { .ticker-track { animation: none; } }
 
 
 /* home */
@@ -225,6 +247,14 @@ main {
   transition-delay: 1.2s;
 }
 .type-in .plate { opacity: 1; transform: none; }
+
+/* home ticker bleeds past main's padding, fades in just before the plate */
+.home .ticker {
+  margin-inline: calc(-1 * clamp(1.25rem, 4vw, 2.5rem));
+  backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+  opacity: 0; transition: opacity 1s ease 1.05s;
+}
+.type-in .ticker { opacity: 1; }
 @media (max-width: 720px) { .plate { grid-template-columns: 1fr; } }
 
 .lede {
@@ -293,7 +323,10 @@ form.signup button:hover { background: var(--paper); color: var(--ink); }
 .note a { color: var(--ink); }
 
 
-/* submissions */
+/* submissions — avant-garde pass: paste-up collage, outlined numerals,
+   a running ticker, a manuscript-slip form. everything scoped to .doc. */
+
+.doc ::selection { background: var(--accent); color: #181713; }
 
 .wrap { max-width: 40rem; margin: 0; padding: 0 var(--pad, 3rem); position: relative; z-index: 1; }
 
@@ -323,19 +356,48 @@ h1 {
 }
 .dek {
   font-family: var(--font-display); font-style: italic; font-weight: 340;
-  font-size: 1.15rem; color: var(--muted); margin-bottom: 2.5rem;
+  font-size: 1.15rem; color: var(--muted); margin-bottom: 2rem;
 }
+
+/* submissions ticker — full bleed, inverted band */
+.ticker--band {
+  background: var(--ink); color: var(--paper);
+  border: 0; margin-bottom: 3.5rem;
+}
+.ticker--band em { color: inherit; }  /* amber vanishes on the cream band in dark */
+
+/* section heads: outlined hero numerals + a mono label under a heavy rule */
+.wrap { counter-reset: sec; }
 h2 {
-  font-family: var(--font-display);   /* serif section titles (per Giuseppe) */
-  text-transform: uppercase; letter-spacing: 0.16em;
-  font-size: 0.72rem; color: var(--faint);
-  border-bottom: 1px solid var(--rule); padding-bottom: 0.4rem;
-  margin: 2.5rem 0 1rem;
+  counter-increment: sec;
+  display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.35rem 0.9rem;
+  font-family: var(--font-mono); font-weight: 400;
+  text-transform: uppercase; letter-spacing: 0.24em;
+  font-size: 0.66rem; color: var(--ink);
+  border-top: 2px solid var(--ink); padding-top: 0.7rem;
+  margin: 4.5rem 0 1.4rem;
+}
+h2::before {
+  content: counter(sec, decimal-leading-zero);
+  font-family: var(--font-hero); font-weight: 900;
+  font-size: 3.4rem; line-height: 0.75; letter-spacing: 0;
+  color: transparent; -webkit-text-stroke: 1px var(--ink);
+}
+h2 em {
+  font-family: var(--font-display); font-style: italic; font-weight: 400;
+  font-variation-settings: "WONK" 1, "SOFT" 100;
+  text-transform: none; letter-spacing: 0; font-size: 1.9em;
+  color: var(--accent-text);
 }
 
 p { margin-bottom: 1rem; }
 p em, li em { font-family: var(--font-display); font-style: italic; }
 strong { font-weight: 600; }
+/* "you absolutely do" gets a highlighter swipe */
+.wrap > p em {
+  background: linear-gradient(transparent 58%, color-mix(in srgb, var(--accent) 55%, transparent) 58% 92%, transparent 92%);
+  padding: 0 0.15em;
+}
 
 ul { list-style: none; margin: 0 0 1rem; }
 li { padding-left: 1.4rem; position: relative; margin-bottom: 0.6rem; }
@@ -343,72 +405,176 @@ li::before { content: "—"; position: absolute; left: 0; color: var(--faint); }
 
 .lead { font-size: 1.05rem; }
 .lead::first-letter {
-  font-family: var(--font-display); font-weight: 600; font-style: normal;
-  float: left; font-size: 3.3em; line-height: 0.6;
-  margin: 0.07em 0.12em 0 0;
+  font-family: var(--font-hero); font-weight: 900; font-style: normal;
+  float: left; font-size: 5.4em; line-height: 0.72;
+  margin: 0.04em 0.1em 0 -0.02em; color: var(--accent-text);
 }
 
+/* what we publish → a type specimen. hollow words fill with amber on hover */
+.genres { counter-reset: g; border-top: 1px solid var(--ink); margin-bottom: 1.75rem; }
+.genres li {
+  counter-increment: g;
+  display: grid; grid-template-columns: 1.6rem 10.5rem 1fr; gap: 0 1rem;
+  align-items: baseline;
+  padding: 0.85rem 0; margin: 0;
+  border-bottom: 1px solid var(--rule);
+  font-size: 0.92rem; line-height: 1.5; color: var(--muted);
+}
+.genres li::before {
+  content: counter(g, decimal-leading-zero); position: static;
+  font-family: var(--font-mono); font-size: 0.6rem; color: var(--faint);
+}
+.genres strong {
+  font-family: var(--font-hero); font-weight: 900; text-transform: uppercase;
+  font-size: 3.1rem; line-height: 0.85;
+  color: transparent; -webkit-text-stroke: 1.2px var(--ink);
+  transition: color .25s, -webkit-text-stroke-color .25s, transform .25s;
+  transform-origin: left bottom;
+}
+.genres li:hover strong {
+  color: var(--accent); -webkit-text-stroke-color: var(--accent);
+  transform: skewX(-8deg);
+}
+/* phones: the description is a bare text node, so stack as blocks instead */
+@media (max-width: 560px) {
+  .genres li { display: block; padding-left: 1.8rem; }
+  .genres li::before { position: absolute; left: 0; top: 1.1rem; }
+  .genres strong { display: block; margin-bottom: 0.3rem; }
+}
+
+.statement {
+  font-family: var(--font-display); font-style: italic; font-weight: 300;
+  font-variation-settings: "opsz" 144, "WONK" 1;
+  font-size: clamp(1.4rem, 3vw, 1.9rem); line-height: 1.15; letter-spacing: -0.01em;
+  margin: 1.75rem 0 1rem;
+}
+
+/* pull quote — breaks out of the column; wraps around a floated print, then runs wide */
+.pull {
+  font-family: var(--font-display); font-style: italic; font-weight: 250;
+  font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+  font-size: clamp(2.3rem, 7vw, 6rem); line-height: 0.92; letter-spacing: -0.03em;
+  text-wrap: balance;
+  margin: 1.5rem 0 2.25rem; padding-left: 0.9rem;
+  border-left: 6px solid var(--accent);
+}
+.pull em {
+  font-style: normal; font-weight: 800;
+  font-variation-settings: "opsz" 144, "SOFT" 0, "WONK" 0;
+  color: var(--accent-text);
+}
+
+/* the particulars → a ledger */
 .meta {
-  display: grid; grid-template-columns: auto 1fr; gap: 0.55rem 1.25rem;
-  align-items: end;                      /* bottom-align each label with its value */
-  font-size: 0.82rem; color: var(--muted);
-  border-bottom: 1px solid var(--rule);  /* dropped the redundant top rule */
-  padding-bottom: 1rem; margin: 1rem 0 1.5rem;
+  display: grid; grid-template-columns: 6.5rem 1fr;
+  font-size: 0.95rem; color: var(--ink);
+  border-top: 1px solid var(--ink);
+  margin: 1rem 0 1.5rem;
 }
+.meta dt, .meta dd { padding: 0.8rem 0; border-bottom: 1px solid var(--rule); }
 .meta dt {
-  text-transform: uppercase; letter-spacing: 0.1em;
-  font-size: 0.62rem; color: var(--faint);
+  text-transform: uppercase; letter-spacing: 0.18em;
+  font-size: 0.6rem; color: var(--accent-text); padding-top: 1.05rem;
 }
-.meta dd { margin: 0; }
+.meta dd { margin: 0; line-height: 1.5; }
 
-/* inline dithered prints — matted paper plates (fixed colors, pop in both modes).
+/* inline dithered prints — pasted-up plates, a little crooked, amber tape.
    NB: named .print, not .plate — .plate is the home page's hidden reveal grid. */
 .print {
+  position: relative;
   margin: 2.75rem 0; max-width: 23rem;
   background: #f4f1ea; padding: 0.7rem; border: 1px solid #0b0b0e;
   box-shadow: 0 2px 24px rgba(0, 0, 0, 0.35);
+  rotate: -1.4deg;
+  transition: rotate .4s cubic-bezier(.2, .8, .2, 1);
 }
-.print--tall { max-width: 20rem; }
+.print--tall { max-width: 20rem; rotate: 2deg; }
+.print:hover { rotate: 0deg; }
+.print::before {
+  content: ""; position: absolute; top: -0.75rem; left: 50%;
+  width: 5.5rem; height: 1.5rem; translate: -50% 0; rotate: -4deg;
+  background: rgba(224, 155, 76, 0.62);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+.print--tall::before { rotate: 5deg; left: 40%; }
 .print img { display: block; width: 100%; height: auto; }
 .print figcaption {
   font-family: var(--font-mono); font-size: 0.56rem; color: #6b6353;
   letter-spacing: 0.02em; line-height: 1.4; margin-top: 0.55rem;
 }
 
+/* the form → a manuscript slip: numbered fields, underline inputs, ruled paper */
 .form-card {
-  border: 1px solid var(--ink);
-  padding: clamp(1.25rem, 4vw, 2rem);
-  margin-top: 1.5rem;
-  background: var(--card);
+  counter-reset: f;
+  border-top: 2px solid var(--ink);
+  padding-top: 1.75rem; margin-top: 1.5rem;
 }
-.field { margin-bottom: 1.1rem; }
+.field { counter-increment: f; margin-bottom: 1.6rem; }
 .field label {
-  display: block; text-transform: uppercase; letter-spacing: 0.12em;
-  font-size: 0.62rem; color: var(--muted); margin-bottom: 0.4rem;
+  display: block; text-transform: uppercase; letter-spacing: 0.14em;
+  font-size: 0.6rem; color: var(--muted); margin-bottom: 0.2rem;
+}
+.field label::before {
+  content: counter(f, decimal-leading-zero) " / ";
+  color: var(--accent-text);
 }
 .field input, .field select, .field textarea {
-  width: 100%; border: 1px solid var(--rule); background: var(--paper);
-  color: var(--ink); font: inherit; font-size: 0.95rem;
-  padding: 0.6rem 0.7rem;
+  width: 100%; border: 0; border-bottom: 1px solid var(--ink); border-radius: 0;
+  background: transparent; color: var(--ink);
+  font-family: var(--font-display); font-size: 1.35rem; font-weight: 380;
+  padding: 0.35rem 0; caret-color: var(--accent);
+  transition: border-color .2s, box-shadow .2s;
+}
+.field input::placeholder, .field textarea::placeholder {
+  color: var(--faint); font-style: italic;
 }
 .field input:focus, .field select:focus, .field textarea:focus {
-  outline: none; border-color: var(--ink);
+  outline: none; border-color: var(--accent); box-shadow: 0 1px 0 var(--accent);
 }
-.field textarea { resize: vertical; min-height: 7rem; }
-.row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-@media (max-width: 520px) { .row { grid-template-columns: 1fr; } }
+.field select {
+  appearance: none; -webkit-appearance: none; cursor: pointer;
+  padding-right: 1.5rem;
+  background-image:
+    linear-gradient(45deg, transparent 50%, currentColor 50%),
+    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: calc(100% - 0.6rem) 55%, calc(100% - 0.25rem) 55%;
+  background-size: 0.35rem 0.35rem;
+  background-repeat: no-repeat;
+}
+.field select option { background: var(--paper); color: var(--ink); }
+.field textarea {
+  resize: vertical; min-height: 11.4rem;
+  font-size: 1.1rem; line-height: 1.9rem; padding: 0;
+  border-bottom: 0;
+  background-image: repeating-linear-gradient(transparent 0 calc(1.9rem - 1px), var(--ruling) calc(1.9rem - 1px) 1.9rem);
+  background-attachment: local;
+}
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+@media (max-width: 520px) { .row { grid-template-columns: 1fr; gap: 0; } }
 
+/* submit — a full-width slab */
 button.submit {
-  border: 1px solid var(--ink); background: var(--ink); color: var(--paper);
-  font: inherit; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em;
-  font-size: 0.72rem; padding: 0.8rem 1.4rem; cursor: pointer;
-  transition: background .2s, color .2s;
+  display: flex; justify-content: space-between; align-items: center;
+  width: 100%; border: 2px solid var(--ink);
+  background: var(--ink); color: var(--paper);
+  font-family: var(--font-hero); font-weight: 900; text-transform: uppercase;
+  font-size: clamp(1.9rem, 6vw, 3.2rem); line-height: 1; letter-spacing: 0.01em;
+  padding: 0.55rem 0.9rem 0.45rem; cursor: pointer; text-align: left;
+  transition: background .2s, color .2s, border-color .2s;
 }
-button.submit:hover { background: var(--paper); color: var(--ink); }
+button.submit::after { content: "→"; font-family: var(--font-ui); font-weight: 300; transition: transform .25s; }
+button.submit:hover, button.submit:focus-visible {
+  background: var(--accent); border-color: var(--accent); color: #181713; outline: none;
+}
+button.submit:hover::after { transform: translateX(0.3em); }
+button.submit:disabled { opacity: 0.6; cursor: progress; }
 
 .thanks {
-  display: none; border: 1px solid var(--ink); padding: 1rem 1.25rem;
-  margin-top: 1rem; font-family: var(--font-display); font-style: italic;
+  display: none; border-left: 6px solid var(--accent);
+  padding: 0.5rem 0 0.5rem 1.1rem; margin-top: 1.5rem;
+  font-family: var(--font-display); font-style: italic; font-weight: 300;
+  font-variation-settings: "opsz" 144, "WONK" 1;
+  font-size: clamp(1.5rem, 4vw, 2.3rem); line-height: 1.15;
 }
 .thanks.show { display: block; }
 
@@ -416,7 +582,7 @@ button.submit:hover { background: var(--paper); color: var(--ink); }
 .fallback a { color: var(--ink); }
 
 footer {
-  margin-top: 3.5rem; padding-top: 1.25rem; border-top: 1px solid var(--rule);
+  margin-top: 4.5rem; padding: 1.25rem 0 2rem; border-top: 2px solid var(--ink);
   color: var(--faint); font-size: 0.72rem;
   display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;
 }
@@ -427,7 +593,7 @@ footer a { color: var(--muted); }
 @media (min-width: 66rem) {
   .wrap { max-width: 66rem; }
   /* the reading column keeps a comfortable measure, pinned left
-     (nav, hero and the XXL title stay full width) */
+     (nav, hero, the XXL title and the pull quote stay wide) */
   .lead, h2, ul, dl, .wrap > p, form, .thanks {
     max-width: 38rem; margin-right: auto;
   }
@@ -438,4 +604,24 @@ footer a { color: var(--muted); }
     margin: 0.25rem 0 1.75rem 2.5rem;
   }
   footer { clear: both; }
+}
+
+
+/* ===== print: plain paper, no furniture ===== */
+@media print {
+  :root {
+    --paper: #fff; --ink: #000; --muted: #333; --faint: #666;
+    --rule: #bbb; --ruling: #ccc; --accent: #000; --accent-text: #000;
+  }
+  body::after, .art, .scrim, #gl, .ticker { display: none !important; }
+  body.doc { font-size: 10.5pt; }
+  .top, .doc .wrap, .titleblock { --pad: 0; }
+  .hero img { max-height: 3.5in; width: auto; }
+  .print { float: none; rotate: 0deg; box-shadow: none; max-width: 3in; break-inside: avoid; }
+  .print::before { display: none; }
+  h2 { break-after: avoid; }
+  .genres li, .meta dt, .meta dd { break-inside: avoid; }
+  /* the form doesn't print; the email fallback does */
+  .form-card { border: 0; padding: 0; }
+  .form-card .field, .form-card .row, button.submit, .thanks { display: none; }
 }

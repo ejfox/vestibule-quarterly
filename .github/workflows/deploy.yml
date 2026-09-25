@@ -11,10 +11,20 @@ jobs:
     permissions:
       contents: read
       deployments: write
+    # secrets can't be read in `if:` directly, so surface presence via env.
+    # no token yet → skip green (we deploy locally with wrangler until it's added).
+    env:
+      HAS_CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
     steps:
+      - name: Skip (no CLOUDFLARE_API_TOKEN secret)
+        if: env.HAS_CF_TOKEN != 'true'
+        run: echo "::notice::CLOUDFLARE_API_TOKEN not set; skipping deploy. Deploy locally with wrangler, or add the secret."
+
       - uses: actions/checkout@v4
+        if: env.HAS_CF_TOKEN == 'true'
 
       - name: Deploy to Cloudflare Pages
+        if: env.HAS_CF_TOKEN == 'true'
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
