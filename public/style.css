@@ -447,6 +447,11 @@ li::before { content: "—"; position: absolute; left: 0; color: var(--faint); }
   transform: skewX(-8deg);
 }
 .genres li:hover img { transform: rotate(-2.5deg) scale(1.06); }
+.kinds-note {
+  font-family: var(--font-mono); font-size: 0.66rem;
+  text-transform: uppercase; letter-spacing: 0.16em; color: var(--muted);
+  margin: -0.4rem 0 0.9rem;
+}
 /* phones: word over description, engraving pinned right */
 @media (max-width: 560px) {
   .genres li { grid-template-columns: 1.6rem 1fr 5.5rem; row-gap: 0.3rem; }
