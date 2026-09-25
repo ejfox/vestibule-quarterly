@@ -62,17 +62,25 @@ body.doc  { font-size: 12pt; line-height: 1.65; padding: clamp(1.5rem, 5vw, 3rem
     var(--scrim) 0%, var(--scrim) 34%, transparent 78%);
 }
 
-/* dithered Prometheus backdrop (public domain, Füger 1817). ink stipple on
-   transparent, so it tints with the theme; inverted in dark so it reads. */
+/* dithered public-domain backdrops. ink stipple on transparent, so they tint
+   with the theme and invert in dark. edge-masked so the figure bleeds in. */
 .art {
   position: fixed; inset: 0; z-index: 0; pointer-events: none;
-  background: right center / auto 100% no-repeat url("/art/prometheus.png");
-  opacity: 0.45;
-  /* dissolve the left edge so the figure bleeds in instead of a hard rectangle */
+  background-repeat: no-repeat;
+  background-position: right center;
+  background-size: auto 100%;
   -webkit-mask-image: linear-gradient(to left, #000 45%, transparent 90%);
   mask-image: linear-gradient(to left, #000 45%, transparent 90%);
 }
-@media (prefers-color-scheme: dark) { .art { opacity: 0.6; filter: invert(1); } }
+@media (prefers-color-scheme: dark) { .art { filter: invert(1); } }
+
+/* home — Prometheus Brings Fire to Mankind, Füger 1817 */
+.art--prometheus { background-image: url("/art/prometheus.png"); opacity: 0.45; }
+@media (prefers-color-scheme: dark) { .art--prometheus { opacity: 0.6; } }
+
+/* submissions — Melencolia I, Dürer 1514. fainter, behind a dense reading column */
+.art--melencolia { background-image: url("/art/melencolia.png"); opacity: 0.14; }
+@media (prefers-color-scheme: dark) { .art--melencolia { opacity: 0.20; } }
 
 main {
   position: relative; z-index: 1;
@@ -244,7 +252,7 @@ form.signup button:hover { background: var(--paper); color: var(--ink); }
 
 /* submissions */
 
-.wrap { max-width: 40rem; margin: 0 auto; }
+.wrap { max-width: 40rem; margin: 0 auto; position: relative; z-index: 1; }
 
 .top {
   display: flex; justify-content: space-between; align-items: baseline;
