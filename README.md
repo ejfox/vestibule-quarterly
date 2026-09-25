@@ -1,114 +1,102 @@
 # Vestibule Quarterly
 
-A small quarterly magazine about thresholds and waiting rooms, and the moment
-before you act. Live at **https://vestibulequarterly.com**.
+A quarterly journal for The Vestibule, an online community into computers,
+behavior, and optimization. Live at **https://vestibulequarterly.com**.
 
-The landing page is one avant-garde composition: a full-bleed WebGL ink field
-behind an animated variable-font masthead, with an issue index and a "notify
-me" signup.
+Two pages:
+
+- **`/`** — a spinning SVG seal masthead over a dithered Prometheus backdrop,
+  the issue line, a "notify me" signup, and a quiet ticker to submissions.
+- **`/submissions/`** — the call for work: full-bleed colossus hero, XXL title,
+  outlined section numerals, a type-specimen list of kinds (Essays, Fiction,
+  Memes, Code, Chains) with engravings, an Issue One prompt, a ledger of
+  particulars, and a manuscript-slip submission form.
 
 ## Stack
 
-Deliberately minimal — no build step, no framework, no dependencies. Same recipe
-as [spliffs.org](https://spliffs.org): static `public/` on Cloudflare Pages.
+Deliberately minimal — no build step, no framework, no dependencies. Static
+`public/` on Cloudflare Pages, plus two Pages Functions backed by D1.
 
-| Piece      | What                                                                 |
-| ---------- | ------------------------------------------------------------------- |
-| Hosting    | Cloudflare Pages (static `public/`)                                  |
-| Type       | Self-hosted variable fonts — Fraunces (display) + Space Grotesk (UI) |
-| Background | Hand-rolled WebGL fragment shader (`public/gl.js`)                   |
-| Typography | Live variable-axis animation (`public/type.js`)                     |
-| Signup     | Formspree `<form>` (swap the action URL) — or add a Pages Function   |
+| Piece     | What                                                                  |
+| --------- | --------------------------------------------------------------------- |
+| Hosting   | Cloudflare Pages (static `public/`)                                   |
+| Type      | Self-hosted variable fonts — Big Shoulders Display, Fraunces, Space Grotesk |
+| Art       | Public-domain prints, dithered or cleaned to ink-on-white (`public/art/`) |
+| Forms     | `functions/api/submit.js` + `subscribe.js` → D1 database `vestibule`   |
 
 ```
 public/
-  index.html            # landing page — mostly content, links style.css
-  submissions/index.html  # submissions page — same
-  style.css             # ALL styling for both pages (colors/type in TOKENS)
-  gl.js                 # WebGL domain-warp "ink on paper" background
-  type.js               # fades the masthead in once the fonts are ready
-  signup.js             # landing-page "notify me" form → /api/subscribe
-  submit-form.js        # submissions form → /api/submit
-  favicon.svg           # threshold / doorway mark (theme-aware)
-  fonts/
-    Fraunces-var.woff2      # variable display serif (latin subset)
-    SpaceGrotesk-var.woff2  # variable UI sans (latin subset)
-functions/api/          # Pages Functions: subscribe + submit → D1
-wrangler.toml           # Pages project + output dir + D1 binding
+  index.html               # home — copy is hand-written; find blocks by <!-- comments -->
+  submissions/index.html   # call for work — same
+  style.css                # ALL styling for both pages (tokens at the top)
+  type.js                  # fades the masthead in once the fonts are ready
+  signup.js                # home "notify me" → /api/subscribe
+  submit-form.js           # submissions form → /api/submit
+  gl.js                    # retired WebGL ink shader (commented out in index.html)
+  _headers                 # no-cache for CSS/JS (see Caching below)
+  art/                     # backdrops, prints, engravings, og-submissions.jpg share card
+  fonts/                   # variable woff2, latin subset
+functions/api/             # Pages Functions: subscribe + submit → D1
+schema.sql                 # D1 tables: submissions, signups
+wrangler.toml              # Pages project + output dir + D1 binding
 ```
 
-## The avant-garde bits
+## Design notes
 
-- **Ink field** (`gl.js`) — a 6-octave fbm domain warp rendered to a full-screen
-  triangle, clamped to a black-on-bone "print" palette with contour banding and
-  a faint grain. Reacts softly to the pointer. Degrades to blank canvas (CSS
-  paper background shows through) with no WebGL, and renders a single static
-  frame under `prefers-reduced-motion`.
-- **Living title** (`type.js`) — the masthead is split into per-letter spans for
-  a blurred staggered reveal, then each word's Fraunces axes (`opsz`, `wght`,
-  `SOFT`, `WONK`) drift on offset sine waves so the type never settles. The
-  second word is drawn as an outline via `-webkit-text-stroke`. Reduced motion
-  keeps the reveal, drops the perpetual drift.
-
-Tune the ink look at the top of the fragment shader in `gl.js`; tune the type
-motion in the `tick()` axis math in `type.js`.
-
-## Fonts
-
-Both are variable `woff2`, latin subset, self-hosted (zero external requests):
-
-- **Fraunces** — SIL Open Font License. Axes: optical size, weight, softness,
-  wonk.
-- **Space Grotesk** — SIL Open Font License.
-
-Re-fetch a subset from Google Fonts' `css2` API if you need more glyphs.
+- **Palette** is warm paper / ink / amber, defined once as tokens at the top of
+  `style.css`, with a dark-mode set (plus faint CRT scanlines) under
+  `prefers-color-scheme`.
+- **Fraunces** has `opsz`, `wght`, `SOFT`, and `WONK` axes; the wobbly display
+  italics (`.statement`, `.pull`, `.chain-q`) lean on them.
+- **Engravings** in the kinds list are ink on white: `mix-blend-mode: multiply`
+  on paper, `invert` + `screen` in dark. `.wrap` has a paper background because
+  its `z-index` isolates it, and the blend needs a backdrop inside it.
+- **Chains** are editorial, not a feature: people send pieces (text or video),
+  and the editors stitch them into threads. There is no form option for it.
+- Motion (seal spin, tickers, caret) stops under `prefers-reduced-motion`.
+- There's a print stylesheet at the bottom of `style.css`.
 
 ## Local development
 
 ```sh
-npx wrangler pages dev public      # serves public/ locally
-# or just open public/index.html in a browser
+cd public && python3 -m http.server 8787   # static preview (forms won't post)
+wrangler pages dev public                  # with Functions + local D1
 ```
 
 ## Deploy
 
-**Manual:**
+Deploys run from a laptop with the **globally installed wrangler 4.92**, not
+`npx wrangler` (newer versions misroute Pages deploys):
 
 ```sh
-npx wrangler pages deploy          # uploads public/ to the "vestibule-quarterly" project
+wrangler pages deploy public --project-name vestibule-quarterly --branch main --commit-dirty=true
 ```
 
-**Automatic (CI):** every push to `main` deploys via
-[`.github/workflows/deploy.yml`](.github/workflows/deploy.yml). Needs one repo
-secret:
+The GitHub Action (`.github/workflows/deploy.yml`) deploys on push **only if**
+the `CLOUDFLARE_API_TOKEN` repo secret exists; without it, the job passes and
+leaves a notice. To turn CI deploys on, create a token with **Account →
+Cloudflare Pages → Edit** and run
+`gh secret set CLOUDFLARE_API_TOKEN --repo ejfox/vestibule-quarterly`.
 
-- `CLOUDFLARE_API_TOKEN` — a token with **Account → Cloudflare Pages → Edit**.
-  Create at <https://dash.cloudflare.com/profile/api-tokens>, then:
+## Caching
 
-  ```sh
-  gh secret set CLOUDFLARE_API_TOKEN --repo ejfox/vestibule-quarterly
-  ```
+The zone's **Browser Cache TTL** (4h default) overrides `_headers` on the
+custom domain, so browsers can pair fresh HTML with a stale `style.css`.
+Until it's set to **Respect Existing Headers** (dashboard → Caching →
+Configuration), **bump the `?v=` on the `style.css` / `submit-form.js` links
+whenever you change them.**
 
-Use **either** this CI flow **or** Cloudflare's native "Connect to Git" — not
-both, or you'll double-deploy.
+## Reading submissions and signups
 
-## DNS
+```sh
+wrangler d1 execute vestibule --remote --command "SELECT * FROM submissions ORDER BY id DESC;"
+wrangler d1 execute vestibule --remote --command "SELECT * FROM signups ORDER BY id DESC;"
+```
 
-The zone `vestibulequarterly.com` lives in the same Cloudflare account. To point
-the apex at Pages, add one proxied CNAME:
+## Credits
 
-| Type  | Name       | Target                        | Proxy   |
-| ----- | ---------- | ----------------------------- | ------- |
-| CNAME | `@` (apex) | `vestibule-quarterly.pages.dev` | Proxied |
-
-Cloudflare flattens the apex CNAME automatically. Also register the custom
-domain on the Pages project (Pages → **vestibule-quarterly** → Custom domains)
-so it provisions the edge TLS cert. Both must exist: the CNAME (resolution) and
-the custom-domain entry (routing + cert).
-
-## Signup
-
-The form posts to Formspree by default — create a form at
-<https://formspree.io>, then replace `your-form-id` in the `<form action>` in
-`public/index.html`. To self-host instead, add `functions/api/subscribe.js` +
-a D1 table (see spliffs.org's `functions/api/count.js` for the pattern).
+Fonts are SIL Open Font License. Art is public domain: Füger's *Prometheus*,
+Vermeer's *The Art of Painting*, Volaire's *Eruption of Vesuvius*, engravings by
+Tony Johannot and J.-J. Grandville, and de Terzi's 1670 airship. The Chains
+engraving is Grandville via the Met (CC0, DP887660). The kinds engravings came
+from Drake's cut of the site.
