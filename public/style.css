@@ -62,7 +62,9 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 body.home { min-height: 100dvh; font-weight: 400; line-height: 1.6; overflow-x: hidden; }
-body.doc  { font-size: 12pt; line-height: 1.65; padding: clamp(1.5rem, 5vw, 3rem); }
+body.doc  { font-size: 12pt; line-height: 1.65; }
+/* shared horizontal gutter for the doc's padded blocks */
+.top, .titleblock, .doc .wrap { --pad: clamp(1.25rem, 5vw, 3rem); }
 
 /* babbo essence: the "machine" text (metadata, labels, readouts) in mono */
 .bar, .note, .issue .st, .meta dt, .top, footer, .field label {
@@ -293,30 +295,31 @@ form.signup button:hover { background: var(--paper); color: var(--ink); }
 
 /* submissions */
 
-.wrap { max-width: 40rem; margin: 0; position: relative; z-index: 1; }
+.wrap { max-width: 40rem; margin: 0; padding: 0 var(--pad, 3rem); position: relative; z-index: 1; }
 
+/* full-width nav */
 .top {
   display: flex; justify-content: space-between; align-items: baseline;
   border-bottom: 1px solid var(--ink);
-  padding-bottom: 0.75rem; margin-bottom: 2.5rem;
+  padding: 1rem var(--pad, 3rem);
   text-transform: uppercase; letter-spacing: 0.24em; font-size: 0.6rem;
 }
 .top a { color: var(--ink); text-decoration: none; }
 .top .home { font-weight: 600; }
 
-/* giant hero illustration at the top of the reading column — modest, centered */
-.hero { margin: 1.25rem 0 clamp(1.5rem, 4vw, 2.5rem); max-width: 20rem; }
-.hero img {
-  width: 100%; height: auto; max-height: 38vh; object-fit: contain;
-  display: block; border: 1px solid var(--rule);
-}
+/* full-bleed hero — touches the window edges */
+.hero { margin: 0; }
+.hero img { width: 100%; height: auto; display: block; border: 0; }
+
+/* XXL title block */
+.titleblock { padding: clamp(1.25rem, 3vw, 2rem) var(--pad, 3rem) 0; }
 
 h1 {
   font-family: var(--font-hero);
   font-weight: 900; text-transform: uppercase;
-  font-size: clamp(3rem, 12vw, 6rem);
-  line-height: 0.88; letter-spacing: 0.005em;
-  margin-bottom: 0.5rem;
+  font-size: clamp(3.5rem, 17vw, 13rem);
+  line-height: 0.82; letter-spacing: 0.005em;
+  margin-bottom: 0.4rem;
 }
 .dek {
   font-family: var(--font-display); font-style: italic; font-weight: 340;
@@ -422,17 +425,17 @@ footer a { color: var(--muted); }
 
 /* ===== wide screens: Tufte-style right margin — art rides beside the words ===== */
 @media (min-width: 66rem) {
-  .wrap { max-width: 60rem; }
-  /* the reading column keeps a comfortable measure, pinned left */
-  h1, .dek, .lead, h2, ul, dl, .wrap > p, form, .thanks {
+  .wrap { max-width: 66rem; }
+  /* the reading column keeps a comfortable measure, pinned left
+     (nav, hero and the XXL title stay full width) */
+  .lead, h2, ul, dl, .wrap > p, form, .thanks {
     max-width: 38rem; margin-right: auto;
   }
-  /* figures float into the right margin, next to the text they follow */
-  .hero, .print {
+  /* the dithered prints float into the right margin, beside the text */
+  .print {
     float: right; clear: right;
     width: 18rem; max-width: 18rem;
     margin: 0.25rem 0 1.75rem 2.5rem;
   }
-  .hero { margin-top: 0; }
   footer { clear: both; }
 }
