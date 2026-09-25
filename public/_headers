@@ -1,6 +1,6 @@
-# Revalidate the small JS on every load (cheap 304s) so deploys show up
-# immediately instead of serving a stale cached copy.
-/gl.js
+# Revalidate CSS/JS on every load (cheap 304s) so deploys show up immediately.
+# Pages' default is max-age=14400, which paired new HTML with a 4h-stale style.css.
+/*.css
   Cache-Control: no-cache
-/type.js
+/*.js
   Cache-Control: no-cache
