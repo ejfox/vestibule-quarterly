@@ -219,9 +219,9 @@ main {
 }
 .lede em { font-family: var(--font-display); font-style: italic; }
 .lede::first-letter {
-  font-family: var(--font-display); font-weight: 600;
-  -webkit-initial-letter: 3; initial-letter: 3;  /* proper cap/baseline alignment */
-  margin-right: 0.1em;
+  font-family: var(--font-display); font-weight: 600; font-style: normal;
+  float: left; font-size: 3.3em; line-height: 0.6;
+  margin: 0.07em 0.12em 0 0;
 }
 
 .aside { display: flex; flex-direction: column; gap: 1.25rem; }
@@ -321,9 +321,9 @@ li::before { content: "—"; position: absolute; left: 0; color: var(--faint); }
 
 .lead { font-size: 1.05rem; }
 .lead::first-letter {
-  font-family: var(--font-display); font-weight: 600;
-  -webkit-initial-letter: 3; initial-letter: 3;  /* proper cap/baseline alignment */
-  margin-right: 0.12em;
+  font-family: var(--font-display); font-weight: 600; font-style: normal;
+  float: left; font-size: 3.3em; line-height: 0.6;
+  margin: 0.07em 0.12em 0 0;
 }
 
 .meta {
@@ -338,6 +338,19 @@ li::before { content: "—"; position: absolute; left: 0; color: var(--faint); }
   font-size: 0.62rem; color: var(--faint);
 }
 .meta dd { margin: 0; }
+
+/* inline dithered plates — matted paper prints (fixed colors, pop in both modes) */
+.plate {
+  margin: 2.75rem auto; max-width: 23rem;
+  background: #f4f1ea; padding: 0.7rem; border: 1px solid #0b0b0e;
+  box-shadow: 0 2px 24px rgba(0, 0, 0, 0.35);
+}
+.plate--tall { max-width: 20rem; }
+.plate img { display: block; width: 100%; height: auto; }
+.plate figcaption {
+  font-family: var(--font-mono); font-size: 0.56rem; color: #6b6353;
+  letter-spacing: 0.02em; line-height: 1.4; margin-top: 0.55rem;
+}
 
 .form-card {
   border: 1px solid var(--ink);
