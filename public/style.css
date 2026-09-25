@@ -418,3 +418,21 @@ footer {
   display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;
 }
 footer a { color: var(--muted); }
+
+
+/* ===== wide screens: Tufte-style right margin — art rides beside the words ===== */
+@media (min-width: 66rem) {
+  .wrap { max-width: 60rem; }
+  /* the reading column keeps a comfortable measure, pinned left */
+  h1, .dek, .lead, h2, ul, dl, .wrap > p, form, .thanks {
+    max-width: 38rem; margin-right: auto;
+  }
+  /* figures float into the right margin, next to the text they follow */
+  .hero, .print {
+    float: right; clear: right;
+    width: 18rem; max-width: 18rem;
+    margin: 0.25rem 0 1.75rem 2.5rem;
+  }
+  .hero { margin-top: 0; }
+  footer { clear: both; }
+}
