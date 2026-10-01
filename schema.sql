@@ -16,3 +16,16 @@ CREATE TABLE IF NOT EXISTS signups (
   created   TEXT    NOT NULL DEFAULT (datetime('now')),
   email     TEXT    NOT NULL UNIQUE
 );
+
+-- hotline voicemails (hotline/ worker). the audio itself stays on twilio.
+CREATE TABLE IF NOT EXISTS voicemails (
+  id            INTEGER PRIMARY KEY AUTOINCREMENT,
+  created       TEXT    NOT NULL DEFAULT (datetime('now')),
+  recording_sid TEXT    NOT NULL UNIQUE,
+  call_sid      TEXT,
+  caller        TEXT,
+  location      TEXT,
+  seconds       INTEGER,
+  transcript    TEXT,
+  recording_url TEXT
+);

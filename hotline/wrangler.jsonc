@@ -1,0 +1,27 @@
+{
+  "name": "vestibule-hotline",
+  "main": "src/index.js",
+  "compatibility_date": "2026-05-22",
+  "observability": { "enabled": true },
+  "ai": { "binding": "AI" },
+  "d1_databases": [
+    { "binding": "DB", "database_name": "vestibule", "database_id": "85cbee61-7945-4110-b842-021e6393f45c" }
+  ],
+  "send_email": [{ "name": "EMAIL" }],
+  // waitUntil only gets ~30s after the webhook returns; download + whisper +
+  // mail can take longer, so the slow half runs as a queue consumer (15 min, retries).
+  "queues": {
+    "producers": [{ "binding": "JOBS", "queue": "vestibule-hotline" }],
+    "consumers": [{ "queue": "vestibule-hotline", "max_batch_size": 1, "max_retries": 5 }]
+  },
+  "vars": {
+    // comma-separated; each address must be verified in email routing first.
+    "HOTLINE_EMAILS": "ejfox+artie@ejfox.com",
+    "FROM_ADDRESS": "hotline@vestibulequarterly.com",
+    // set GREETING_URL to an mp3 to play a recorded greeting instead of the robot.
+    "GREETING_URL": "",
+    "VOICE": "Polly.Joanna-Neural",
+    "GREETING": "You've reached the Vestibule hotline. Leave us a message after the beep. Press pound, or just hang up, when you're done.",
+    "GOODBYE": "Got it. Thank you."
+  }
+}
