@@ -5,10 +5,11 @@
 //   POST /recording  recordingStatusCallback → queue; queue() downloads the mp3,
 //                    transcribes, emails, posts to discord, logs it in D1
 //
-// Every request must carry ?k=WEBHOOK_KEY (it's in the webhook url we gave
-// twilio), so nobody else can make us send mail. We use a revocable twilio api
-// key, not the account auth token, which is why this isn't X-Twilio-Signature.
-// Secrets: WEBHOOK_KEY, TWILIO_ACCOUNT_SID, TWILIO_API_KEY, TWILIO_API_SECRET,
+// Nobody else can make us send mail: we only mail a recording we've just
+// downloaded from *our* twilio account with our api key, by sid, once. A forged
+// callback names a recording that doesn't exist and gets dropped. (We hold a
+// revocable api key, not the account auth token, so no X-Twilio-Signature.)
+// Secrets: TWILIO_ACCOUNT_SID, TWILIO_API_KEY, TWILIO_API_SECRET,
 // DISCORD_WEBHOOK_URL (optional — no secret, no discord post).
 
 import { EmailMessage } from 'cloudflare:email';
@@ -22,7 +23,7 @@ export default {
     if (req.method !== 'POST') return new Response('not found', { status: 404 });
 
     const params = Object.fromEntries(await req.formData());
-    if (!keyOk(url, env) || params.AccountSid !== env.TWILIO_ACCOUNT_SID) return new Response('forbidden', { status: 403 });
+    if (params.AccountSid !== env.TWILIO_ACCOUNT_SID) return new Response('forbidden', { status: 403 });
 
     if (url.pathname === '/voice') return voice(url, params, env);
     if (url.pathname === '/done') return twiml(`<Say voice="${env.VOICE}">${esc(env.GOODBYE)}</Say><Hangup/>`);
@@ -49,12 +50,9 @@ export default {
 
 function voice(url, p, env) {
   // the recording callback doesn't carry caller info, so we hand it along in the url.
-  // both follow-up urls carry the key along too.
-  const k = url.searchParams.get('k');
   const cb = new URL('/recording', url);
-  cb.search = new URLSearchParams({ k, from: p.From || '', where: [p.FromCity, p.FromState, p.FromCountry].filter(Boolean).join(', ') });
+  cb.search = new URLSearchParams({ from: p.From || '', where: [p.FromCity, p.FromState, p.FromCountry].filter(Boolean).join(', ') });
   const done = new URL('/done', url);
-  done.search = new URLSearchParams({ k });
   // a recorded greeting ends with its own beep (it trips out into it), so twilio's is off.
   const greeting = env.GREETING_URL
     ? `<Play>${esc(env.GREETING_URL)}</Play>`
@@ -71,10 +69,13 @@ async function deliver(url, p, env) {
   // queue retries and twilio re-sends shouldn't mail the same message twice.
   if (await env.DB.prepare('SELECT 1 FROM voicemails WHERE recording_sid = ?').bind(p.RecordingSid).first()) return;
 
-  // only ever fetch from twilio, with our credentials.
-  const rec = new URL(`${p.RecordingUrl}.mp3`);
-  if (rec.hostname !== 'api.twilio.com' && !env.DEV_ANY_RECORDING_HOST) throw new Error(`odd recording host ${rec.hostname}`);
+  // build the url ourselves from the sid, so we only ever fetch our own recordings.
+  if (!/^RE[0-9a-f]{32}$/.test(p.RecordingSid || '') && !env.DEV_ANY_RECORDING_HOST) return;
+  const rec = env.DEV_ANY_RECORDING_HOST
+    ? `${p.RecordingUrl}.mp3`
+    : `https://api.twilio.com/2010-04-01/Accounts/${env.TWILIO_ACCOUNT_SID}/Recordings/${p.RecordingSid}.mp3`;
   const res = await fetch(rec, { headers: { Authorization: `Basic ${btoa(`${env.TWILIO_API_KEY}:${env.TWILIO_API_SECRET}`)}` } });
+  if (res.status === 404) return console.warn(`no such recording ${p.RecordingSid}, dropping`);
   if (!res.ok) throw new Error(`recording fetch ${res.status}`);
   const audio = new Uint8Array(await res.arrayBuffer());
 
@@ -154,13 +155,6 @@ async function discord(call, audio, filename, env) {
   body.append('files[0]', new Blob([audio], { type: 'audio/mpeg' }), filename);
   const res = await fetch(env.DISCORD_WEBHOOK_URL, { method: 'POST', body });
   if (!res.ok) throw new Error(`discord ${res.status}: ${await res.text()}`);
-}
-
-function keyOk(url, env) {
-  const enc = new TextEncoder();
-  const got = enc.encode(url.searchParams.get('k') || '');
-  const want = enc.encode(env.WEBHOOK_KEY || '');
-  return want.length > 0 && got.length === want.length && crypto.subtle.timingSafeEqual(got, want);
 }
 
 const twiml = (body) =>
