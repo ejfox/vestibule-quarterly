@@ -80,6 +80,16 @@ curl -sL https://vestibulequarterly.com/submissions/ | grep -c '<something you c
 - The WebGL shader (`gl.js`) is retired and commented out. Leave it unless asked.
 - Video is accepted for any kind (about 10 minutes; a 60-second short counts).
 
+## The hotline
+
+`hotline/` is a separate Cloudflare Worker (not Pages): the voicemail line at
+**(845) 493-3999**, linked in the submissions footer. Read `hotline/README.md`.
+Deploy it with `cd hotline && wrangler deploy` (wrangler refuses Worker
+commands from the repo root, which is the Pages project). Its greeting mp3 lives
+in `public/` and ships with the Pages deploy; bump `?v=` in `GREETING_URL`
+when it changes. Messages only reach the phone archive when an editor approves
+them, since callers are told their message "may be published."
+
 ## Open items
 
 - [ ] Dashboard: set Browser Cache TTL to "Respect Existing Headers" (human task).
@@ -87,3 +97,5 @@ curl -sL https://vestibulequarterly.com/submissions/ | grep -c '<something you c
 - [ ] Rotate the Issue One prompt callout (`#prompt`, "Who's holding the pen?")
       when the editors pick the next one.
 - [ ] Submissions pile up in D1; the query commands are in the README.
+- [ ] Hotline: add the other editors to `HOTLINE_EMAILS` (verify each in Email Routing).
+- [ ] Hotline: Twilio balance has no auto-recharge; if it runs dry the number goes away.

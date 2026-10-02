@@ -27,5 +27,6 @@ CREATE TABLE IF NOT EXISTS voicemails (
   location      TEXT,
   seconds       INTEGER,
   transcript    TEXT,
-  recording_url TEXT
+  recording_url TEXT,
+  published     INTEGER NOT NULL DEFAULT 0  -- 1 = editors put it in the phone archive
 );
