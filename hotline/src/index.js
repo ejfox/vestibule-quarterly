@@ -5,8 +5,10 @@
 //   POST /recording  recordingStatusCallback → queue; queue() downloads the mp3,
 //                    transcribes, emails, posts to discord, logs it in D1
 //
-// Every twilio request is checked against X-Twilio-Signature, so nobody else
-// can make us send mail. Secrets: TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN,
+// Every request must carry ?k=WEBHOOK_KEY (it's in the webhook url we gave
+// twilio), so nobody else can make us send mail. We use a revocable twilio api
+// key, not the account auth token, which is why this isn't X-Twilio-Signature.
+// Secrets: WEBHOOK_KEY, TWILIO_ACCOUNT_SID, TWILIO_API_KEY, TWILIO_API_SECRET,
 // DISCORD_WEBHOOK_URL (optional — no secret, no discord post).
 
 import { EmailMessage } from 'cloudflare:email';
@@ -20,7 +22,7 @@ export default {
     if (req.method !== 'POST') return new Response('not found', { status: 404 });
 
     const params = Object.fromEntries(await req.formData());
-    if (!(await fromTwilio(req, params, env))) return new Response('bad signature', { status: 403 });
+    if (!keyOk(url, env) || params.AccountSid !== env.TWILIO_ACCOUNT_SID) return new Response('forbidden', { status: 403 });
 
     if (url.pathname === '/voice') return voice(url, params, env);
     if (url.pathname === '/done') return twiml(`<Say voice="${env.VOICE}">${esc(env.GOODBYE)}</Say><Hangup/>`);
@@ -47,14 +49,19 @@ export default {
 
 function voice(url, p, env) {
   // the recording callback doesn't carry caller info, so we hand it along in the url.
+  // both follow-up urls carry the key along too.
+  const k = url.searchParams.get('k');
   const cb = new URL('/recording', url);
-  cb.search = new URLSearchParams({ from: p.From || '', where: [p.FromCity, p.FromState, p.FromCountry].filter(Boolean).join(', ') });
+  cb.search = new URLSearchParams({ k, from: p.From || '', where: [p.FromCity, p.FromState, p.FromCountry].filter(Boolean).join(', ') });
+  const done = new URL('/done', url);
+  done.search = new URLSearchParams({ k });
+  // a recorded greeting ends with its own beep (it trips out into it), so twilio's is off.
   const greeting = env.GREETING_URL
     ? `<Play>${esc(env.GREETING_URL)}</Play>`
     : `<Say voice="${env.VOICE}">${esc(env.GREETING)}</Say>`;
   return twiml(`${greeting}
-  <Record maxLength="${MAX_SECONDS}" playBeep="true" finishOnKey="#" trim="trim-silence"
-    action="${esc(new URL('/done', url).href)}"
+  <Record maxLength="${MAX_SECONDS}" playBeep="${!env.GREETING_URL}" finishOnKey="#" trim="trim-silence"
+    action="${esc(done.href)}"
     recordingStatusCallback="${esc(cb.href)}" recordingStatusCallbackEvent="completed"/>`);
 }
 
@@ -67,7 +74,7 @@ async function deliver(url, p, env) {
   // only ever fetch from twilio, with our credentials.
   const rec = new URL(`${p.RecordingUrl}.mp3`);
   if (rec.hostname !== 'api.twilio.com' && !env.DEV_ANY_RECORDING_HOST) throw new Error(`odd recording host ${rec.hostname}`);
-  const res = await fetch(rec, { headers: { Authorization: `Basic ${btoa(`${env.TWILIO_ACCOUNT_SID}:${env.TWILIO_AUTH_TOKEN}`)}` } });
+  const res = await fetch(rec, { headers: { Authorization: `Basic ${btoa(`${env.TWILIO_API_KEY}:${env.TWILIO_API_SECRET}`)}` } });
   if (!res.ok) throw new Error(`recording fetch ${res.status}`);
   const audio = new Uint8Array(await res.arrayBuffer());
 
@@ -149,16 +156,11 @@ async function discord(call, audio, filename, env) {
   if (!res.ok) throw new Error(`discord ${res.status}: ${await res.text()}`);
 }
 
-// https://www.twilio.com/docs/usage/security#validating-requests
-// sig = base64(hmac-sha1(auth token, full url + each POST param's key+value, sorted by key))
-async function fromTwilio(req, params, env) {
-  const sig = req.headers.get('x-twilio-signature');
-  if (!sig || !env.TWILIO_AUTH_TOKEN) return false;
-  const data = req.url + Object.keys(params).sort().map((k) => k + params[k]).join('');
+function keyOk(url, env) {
   const enc = new TextEncoder();
-  const key = await crypto.subtle.importKey('raw', enc.encode(env.TWILIO_AUTH_TOKEN), { name: 'HMAC', hash: 'SHA-1' }, false, ['sign']);
-  const want = base64(new Uint8Array(await crypto.subtle.sign('HMAC', key, enc.encode(data))));
-  return want.length === sig.length && crypto.subtle.timingSafeEqual(enc.encode(want), enc.encode(sig));
+  const got = enc.encode(url.searchParams.get('k') || '');
+  const want = enc.encode(env.WEBHOOK_KEY || '');
+  return want.length > 0 && got.length === want.length && crypto.subtle.timingSafeEqual(got, want);
 }
 
 const twiml = (body) =>
