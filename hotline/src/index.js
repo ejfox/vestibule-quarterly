@@ -15,6 +15,8 @@
 import { EmailMessage } from 'cloudflare:email';
 
 const MAX_SECONDS = 300;
+// twilio's default hangs up after 5s of quiet, which cut off people gathering their thoughts.
+const SILENCE_SECONDS = 30;
 
 export default {
   async fetch(req, env, ctx) {
@@ -58,7 +60,7 @@ function voice(url, p, env) {
     ? `<Play>${esc(env.GREETING_URL)}</Play>`
     : `<Say voice="${env.VOICE}">${esc(env.GREETING)}</Say>`;
   return twiml(`${greeting}
-  <Record maxLength="${MAX_SECONDS}" playBeep="${!env.GREETING_URL}" finishOnKey="#" trim="trim-silence"
+  <Record maxLength="${MAX_SECONDS}" timeout="${SILENCE_SECONDS}" playBeep="${!env.GREETING_URL}" finishOnKey="#" trim="trim-silence"
     action="${esc(done.href)}"
     recordingStatusCallback="${esc(cb.href)}" recordingStatusCallbackEvent="completed"/>`);
 }
