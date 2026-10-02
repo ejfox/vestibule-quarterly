@@ -33,7 +33,7 @@ export default {
     if (url.pathname === '/approve') return approve(req, url, env);
     if (req.method !== 'POST') return new Response('not found', { status: 404 });
 
-    const params = Object.fromEntries(await req.formData());
+    const params = Object.fromEntries(await req.formData().catch(() => []));
     if (params.AccountSid !== env.TWILIO_ACCOUNT_SID) return new Response('forbidden', { status: 403 });
 
     switch (url.pathname) {
@@ -109,7 +109,7 @@ async function audio(url, env) {
   const sid = url.pathname.slice('/audio/'.length).replace(/\.mp3$/, '');
   if (!SID.test(sid)) return new Response('not found', { status: 404 });
   // public only once an editor approved it; the approve page passes its sig to preview.
-  const ok = (await sign(sid, env)) === url.searchParams.get('sig') ||
+  const ok = (await sigOk(sid, url.searchParams.get('sig'), env)) ||
     (await env.DB.prepare('SELECT 1 FROM voicemails WHERE recording_sid = ? AND published = 1').bind(sid).first());
   const obj = ok && (await env.ARCHIVE.get(`${sid}.mp3`));
   if (!obj) return new Response('not found', { status: 404 });
@@ -117,19 +117,22 @@ async function audio(url, env) {
 }
 
 async function approve(req, url, env) {
-  const form = req.method === 'POST' ? Object.fromEntries(await req.formData()) : {};
+  const form = req.method === 'POST' ? Object.fromEntries(await req.formData().catch(() => [])) : {};
   const sid = form.sid || url.searchParams.get('sid') || '';
   const sig = form.sig || url.searchParams.get('sig') || '';
-  if (!SID.test(sid) || sig !== (await sign(sid, env))) return new Response('bad link', { status: 403 });
+  if (!SID.test(sid) || !(await sigOk(sid, sig, env))) return new Response('bad link', { status: 403 });
+  // messages from before the R2 copy existed can't be played on the phone, so they can't be published.
+  const playable = !!(await env.ARCHIVE.head(`${sid}.mp3`));
 
   // a POST, not a GET, flips it: mail scanners prefetch links and shouldn't publish anything.
   if (req.method === 'POST') {
-    await env.DB.prepare('UPDATE voicemails SET published = ? WHERE recording_sid = ?').bind(form.publish === '1' ? 1 : 0, sid).run();
+    const publish = form.publish === '1' && playable ? 1 : 0;
+    await env.DB.prepare('UPDATE voicemails SET published = ? WHERE recording_sid = ?').bind(publish, sid).run();
     return Response.redirect(`${url.origin}/approve?sid=${sid}&sig=${sig}`, 303);
   }
   const row = await env.DB.prepare('SELECT * FROM voicemails WHERE recording_sid = ?').bind(sid).first();
   if (!row) return new Response('not found', { status: 404 });
-  return new Response(page(row, sig), { headers: { 'Content-Type': 'text/html; charset=utf-8' } });
+  return new Response(page(row, sig, playable), { headers: { 'Content-Type': 'text/html; charset=utf-8' } });
 }
 
 async function deliver(url, p, env) {
@@ -256,7 +259,14 @@ async function sign(sid, env) {
   return [...mac.slice(0, 16)].map((b) => b.toString(16).padStart(2, '0')).join('');
 }
 
-function page(row, sig) {
+async function sigOk(sid, sig, env) {
+  const enc = new TextEncoder();
+  const got = enc.encode(sig || '');
+  const want = enc.encode(await sign(sid, env));
+  return got.length === want.length && crypto.subtle.timingSafeEqual(got, want);
+}
+
+function page(row, sig, playable) {
   const on = row.published === 1;
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Hotline message · Vestibule Quarterly</title><meta name="robots" content="noindex">
@@ -277,13 +287,13 @@ function page(row, sig) {
   <h1>${esc(row.location || 'somewhere')} · ${row.seconds}s</h1>
   <div class="k">${esc(row.created)} UTC · ${esc(row.caller.replace(/.(?=.{4})/g, '•'))}</div>
   <blockquote>${row.transcript ? esc(row.transcript) : 'no words detected'}</blockquote>
-  <audio controls preload="none" src="/audio/${row.recording_sid}.mp3?sig=${sig}"></audio>
+  ${playable ? `<audio controls preload="none" src="/audio/${row.recording_sid}.mp3?sig=${sig}"></audio>` : ''}
   <p class="st">${on ? '<b>In the phone archive.</b> Callers who dial the code hear it.' : 'Not in the phone archive. Only the editors have heard it.'}</p>
-  <form method="post">
+  ${!playable ? '<p class="st">This one came in before we kept our own copy of the audio, so it can’t go in the phone archive. The mp3 is attached to its email.</p>' : `<form method="post">
     <input type="hidden" name="sid" value="${row.recording_sid}"><input type="hidden" name="sig" value="${sig}">
     <input type="hidden" name="publish" value="${on ? 0 : 1}">
     <button>${on ? 'Pull it from the archive' : 'Put it in the phone archive'}</button>
-  </form>
+  </form>`}
 </main></body></html>`;
 }
 
